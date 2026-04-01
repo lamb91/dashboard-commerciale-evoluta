@@ -139,4 +139,163 @@ Per rendere la Suite accessibile online:
 
 ---
 
+---
+
+## 🗺️ Roadmap — Evoluzioni possibili
+
+Sezione dedicata al dev di supporto: idee concrete, ordinate per impatto e complessità stimata.
+
+---
+
+### 🟢 Quick wins (bassa complessità, alto impatto)
+
+#### 1. Persistenza dati con IndexedDB
+Attualmente i file Excel vanno ricaricati ad ogni apertura del browser. Con IndexedDB (API nativa, no backend) si può salvare in locale l'ultimo dataset caricato e ripristinarlo automaticamente.
+
+```js
+// Sketch implementativo
+const db = await openDB('ellysse-suite', 1, {
+  upgrade(db) { db.createObjectStore('periods'); }
+});
+await db.put('periods', S.periods, 'last');
+```
+
+**Dove intervenire:** `Ellysse_Evolution.html` — funzioni `loadOneFile()` e `buildComparison()`.
+
+---
+
+#### 2. Export PDF del report
+Aggiungere un pulsante "📄 Esporta PDF" che genera un report stampabile con: banner insight, KPI strip, tabella tracciamento e grafici.
+
+**Libreria consigliata:** [`html2canvas`](https://html2canvas.hertzen.com/) + [`jsPDF`](https://github.com/parallax/jsPDF) (entrambe disponibili su cdnjs).
+
+```js
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
+async function exportPDF() {
+  const canvas = await html2canvas(document.getElementById('dashArea'));
+  const pdf = new jsPDF('l', 'mm', 'a4');
+  pdf.addImage(canvas.toDataURL(), 'PNG', 0, 0, 297, 210);
+  pdf.save(`Ellysse_Report_${new Date().toISOString().slice(0,10)}.pdf`);
+}
+```
+
+---
+
+#### 3. Alert soglie probabilità
+Notifica visiva (e opzionalmente via email/webhook) quando un deal scende sotto una soglia configurabile (es. prob < 30% su deal > €50k).
+
+**Dove intervenire:** `Ellysse_Evolution.html` — dopo `matchDeals()`, aggiungere una funzione `checkAlerts()` che confronta le soglie configurabili con i dati tracciati.
+
+---
+
+#### 4. URL shareable con stato compresso
+Codificare lo stato corrente (periodi caricati, filtri attivi) in un parametro URL base64, così un link condiviso ripristina la stessa vista.
+
+```js
+const state = btoa(JSON.stringify({ periods: S.periods.map(p => p.label), filters: {...} }));
+history.replaceState(null, '', `?s=${state}`);
+```
+
+---
+
+### 🟡 Medio termine (complessità media)
+
+#### 5. Backend leggero con Supabase (dati condivisi tra utenti)
+Sostituire il caricamento manuale Excel con una tabella Supabase sincronizzata. Gli agenti vedono i propri deal in real-time, il manager vede tutto.
+
+**Stack:** Supabase (PostgreSQL + auth + realtime) — piano free sufficiente per i volumi Ellysse.
+
+**Schema minimo:**
+```sql
+CREATE TABLE deals (
+  id TEXT PRIMARY KEY,
+  nome TEXT, company TEXT, agente TEXT,
+  probabilita FLOAT, importo FLOAT, arr FLOAT,
+  famiglia TEXT, periodo DATE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+**Dove intervenire:** sostituire `loadOneFile()` con una chiamata `supabase.from('deals').select()` con filtro per periodo.
+
+---
+
+#### 6. Connessione diretta CRM (HubSpot / Pipedrive / Salesforce)
+Eliminare il passaggio Excel aggiungendo un'autenticazione OAuth e chiamate alle API del CRM. I dati si aggiornano in tempo reale senza caricare file.
+
+**Librerie:** fetch nativo + OAuth2 PKCE flow (nessuna libreria necessaria).
+
+**Dove intervenire:** creare un nuovo modulo `crm-connector.js` con classe astratta `CRMAdapter` e implementazioni specifiche per ciascun CRM. La Suite espone un pulsante "Connetti CRM" nel tab Evolution.
+
+---
+
+#### 7. Report AI automatico settimanale (via webhook)
+Aggiungere un endpoint serverless (es. Cloudflare Workers o Vercel Edge Function) che:
+1. Legge i dati dal CRM o da un bucket S3
+2. Chiama Gemini con il prompt già usato in Evolution
+3. Invia il report via email (Resend) o su Slack (Webhook)
+
+**Cron:** ogni lunedì mattina alle 8:00.
+
+---
+
+#### 8. Autenticazione e profili agente
+Aggiungere un login semplice (Supabase Auth o Google OAuth) per mostrare automaticamente all'agente solo i propri deal, nascondendo quelli degli altri.
+
+**Logica:** dopo il login, filtrare `S.tracked` con `d.agent === currentUser.name` come default, con override per il manager.
+
+---
+
+### 🔴 Lungo termine (alta complessità, alto valore)
+
+#### 9. Deal Scoring con ML
+Addestrare un modello leggero (es. regressione logistica o XGBoost) sui dati storici per predire la probabilità di chiusura effettiva, indipendentemente dalla stima del commerciale.
+
+**Stack:** Python + scikit-learn per il training offline → esportare il modello come ONNX → caricare in browser con `onnxruntime-web`.
+
+**Output:** colonna aggiuntiva "Score AI" nella tabella tracciamento, con confronto vs probabilità manuale.
+
+---
+
+#### 10. Mobile app (PWA)
+Trasformare la Suite in una Progressive Web App installabile su smartphone. Gli agenti possono consultare la pipeline in mobilità.
+
+**Modifiche necessarie:**
+- Aggiungere `manifest.json` e service worker
+- Riscrivere i layout con `min-width` mobile-first
+- Usare `IntersectionObserver` per lazy-load dei grafici
+
+**manifest.json:**
+```json
+{
+  "name": "Ellysse Suite",
+  "short_name": "Ellysse",
+  "start_url": "/Ellysse_Suite.html",
+  "display": "standalone",
+  "background_color": "#06090f",
+  "theme_color": "#9b7ef8",
+  "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+}
+```
+
+---
+
+#### 11. Forecasting AI della pipeline
+Vista predittiva che, sulla base dei trend storici (N mesi), proietta la pipeline futura con intervalli di confidenza. Utile per la pianificazione trimestrale.
+
+**Approccio:** regressione lineare sui valori storici per periodo, implementabile in puro JS senza dipendenze esterne.
+
+---
+
+### 📌 Note architetturali per il dev
+
+- Tutti i tool sono **single-file HTML** — CSS, JS e HTML in un unico file. Facile da distribuire, ma per evoluzioni significative conviene separare in moduli ES6 (`import/export`) e usare un bundler leggero (Vite).
+- La comunicazione Suite ↔ iframe avviene tramite **accesso diretto al DOM** (`iframe.contentWindow`). Se si passa a HTTPS (GitHub Pages o altro), questo continua a funzionare purché tutti i file siano sullo stesso origin. Con domini diversi servirà `postMessage`.
+- Il modello AI (`gemini-2.5-flash-lite`) è facilmente sostituibile: basta cambiare il parametro `model` nelle chiamate fetch a OpenRouter. Si può anche esporre un selector nel UI per scegliere il modello.
+- Per aggiungere un **nuovo tool** alla Suite: creare il file HTML, aggiungere una entry in `TOOLS` in `Ellysse_Suite.html`, aggiungere il tab e il pane corrispondente, e implementare `injectKey()` per il nuovo tool se usa l'AI.
+
+---
+
 *Ellysse Suite — sviluppato per il team commerciale Ellysse*
