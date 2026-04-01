@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Dati sensibili (non caricare su GitHub)
+*.xlsx
+*.xls
+*.csv
+BASE DATI/
+ellysse-dashboard/
+
+# File non pertinenti al progetto web
+*.pptx
+*.docx
+New\ SALES\ MEETING.pptx
+Trattative_Ellysse_2026-03-24.xls
+ellysse-team-2026-percentuali-2026-02-17.xlsx
+Ellysse_Dashboard_Commerciale_2026-03-24.html
+
+# Editor
+.vscode/
+.idea/

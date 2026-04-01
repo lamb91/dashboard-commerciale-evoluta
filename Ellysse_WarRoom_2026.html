@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ellysse · War Room 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+  :root {
+    --bg: #06090f;
+    --bg2: #0b1120;
+    --bg3: #0f1929;
+    --glass: rgba(255,255,255,0.035);
+    --glass2: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --orange: #FF6B2B;
+    --orange2: #ff8c57;
+    --cyan: #00C8FF;
+    --green: #00E676;
+    --green2: #00bf63;
+    --red: #FF3D71;
+    --yellow: #FFD740;
+    --navy: #1a6fd4;
+    --text: #e8edf5;
+    --text2: #8a9ab8;
+    --text3: #4a5a78;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background ambient glow */
+  body::before {
+    content:'';
+    position:fixed; top:0; left:0; right:0; height:100vh;
+    background: radial-gradient(ellipse 80% 60% at 20% -10%, rgba(255,107,43,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 80% 10%, rgba(0,200,255,0.05) 0%, transparent 55%);
+    pointer-events:none; z-index:0;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width:6px; height:6px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: rgba(255,107,43,0.4); border-radius:3px; }
+
+  /* ─── LAYOUT ─── */
+  .shell { position:relative; z-index:1; max-width:1440px; margin:0 auto; padding:0 28px 48px; }
+
+  /* ─── HEADER ─── */
+  header {
+    position:sticky; top:0; z-index:100;
+    background: rgba(6,9,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+  }
+  .header-inner {
+    max-width:1440px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    height:60px; gap:24px;
+  }
+  .logo-mark {
+    width:36px; height:36px; border-radius:10px;
+    background: linear-gradient(135deg, var(--orange), #ff3d00);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:900; font-size:16px; color:#fff;
+    font-family: var(--mono); flex-shrink:0;
+    box-shadow: 0 0 20px rgba(255,107,43,0.4);
+  }
+  .brand-text { font-weight:800; font-size:15px; letter-spacing:-0.02em; }
+  .brand-sub { font-size:10px; color:var(--text3); letter-spacing:0.08em; margin-top:1px; font-family:var(--mono); }
+  .header-kpis { display:flex; gap:32px; align-items:center; }
+  .hkpi { text-align:right; }
+  .hkpi-val { font-family:var(--mono); font-size:18px; font-weight:700; color:var(--orange); }
+  .hkpi-lbl { font-size:9px; color:var(--text3); letter-spacing:0.1em; text-transform:uppercase; margin-top:1px; }
+  .header-badge {
+    background: rgba(255,107,43,0.12); border:1px solid rgba(255,107,43,0.25);
+    border-radius:20px; padding:4px 14px;
+    font-size:11px; color:var(--orange); font-family:var(--mono); font-weight:600;
+    display:flex; align-items:center; gap:6px;
+  }
+  .pulse-dot {
+    width:6px; height:6px; border-radius:50%; background:var(--orange);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; box-shadow:0 0 0 0 rgba(255,107,43,0.4); }
+    50% { opacity:0.7; box-shadow:0 0 0 4px rgba(255,107,43,0); }
+  }
+
+  /* ─── HERO RING KPIs ─── */
+  .hero-section {
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap:20px;
+    padding: 28px 0 20px;
+  }
+  .ring-card {
+    background: var(--glass2);
+    border: 1px solid var(--border);
+    border-radius:20px;
+    padding:28px 24px;
+    display:flex; align-items:center; gap:24px;
+    position:relative; overflow:hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .ring-card:hover { transform:translateY(-2px); border-color:var(--border2); }
+  .ring-card::after {
+    content:''; position:absolute; top:0; right:0; width:120px; height:120px;
+    background: radial-gradient(circle, var(--glow-color, rgba(255,107,43,0.06)) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .ring-wrap { flex-shrink:0; position:relative; }
+  .ring-svg { transform:rotate(-90deg); }
+  .ring-bg { fill:none; stroke:rgba(255,255,255,0.06); }
+  .ring-fill { fill:none; stroke-linecap:round; transition:stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1); }
+  .ring-label {
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    transform:rotate(0deg);
+  }
+  .ring-pct { font-family:var(--mono); font-size:16px; font-weight:700; line-height:1; }
+  .ring-sub-lbl { font-size:8px; color:var(--text3); margin-top:2px; letter-spacing:0.06em; }
+  .ring-info { flex:1; }
+  .ring-title { font-size:12px; color:var(--text2); letter-spacing:0.04em; text-transform:uppercase; margin-bottom:6px; }
+  .ring-value { font-family:var(--mono); font-size:24px; font-weight:800; line-height:1.1; }
+  .ring-detail { font-size:11px; color:var(--text3); margin-top:6px; line-height:1.5; }
+  .ring-tag {
+    display:inline-block; font-size:9px; font-family:var(--mono); font-weight:700;
+    padding:2px 8px; border-radius:4px; margin-top:8px;
+    text-transform:uppercase; letter-spacing:0.08em;
+  }
+
+  /* ─── SECTION HEADER ─── */
+  .section-header {
+    display:flex; align-items:center; gap:12px;
+    margin: 28px 0 14px;
+  }
+  .section-icon {
+    width:28px; height:28px; border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; flex-shrink:0;
+  }
+  .section-title { font-size:13px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--text); }
+  .section-sub { font-size:11px; color:var(--text3); margin-left:auto; font-family:var(--mono); }
+  .section-line { flex:1; height:1px; background:var(--border); }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius:16px;
+    padding:20px 22px;
+    position:relative; overflow:hidden;
+  }
+  .card-title { font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:14px; }
+
+  /* ─── WATERFALL ─── */
+  .waterfall-grid { display:grid; gap:20px; grid-template-columns:1fr 340px; }
+  .waterfall-bars { padding:0; }
+  .wf-row {
+    display:flex; align-items:center; gap:12px;
+    padding: 10px 0; border-bottom:1px solid rgba(255,255,255,0.04);
+  }
+  .wf-label { width:180px; font-size:12px; color:var(--text2); flex-shrink:0; }
+  .wf-label strong { display:block; font-size:13px; color:var(--text); font-weight:600; }
+  .wf-label span { font-size:10px; color:var(--text3); font-family:var(--mono); }
+  .wf-bar-wrap { flex:1; height:32px; position:relative; display:flex; align-items:center; }
+  .wf-bar-bg { position:absolute; inset:0; background:rgba(255,255,255,0.03); border-radius:6px; }
+  .wf-bar-fill {
+    position:absolute; left:0; top:0; height:100%; border-radius:6px;
+    display:flex; align-items:center; padding-left:10px;
+    font-family:var(--mono); font-size:11px; font-weight:700; color:#fff;
+    transition: width 1s cubic-bezier(0.4,0,0.2,1);
+    min-width:2px;
+  }
+  .wf-cumul { width:90px; text-align:right; font-family:var(--mono); font-size:13px; font-weight:700; flex-shrink:0; }
+  .wf-source { width:60px; flex-shrink:0; text-align:center; }
+  .source-badge {
+    display:inline-block; font-size:8px; font-family:var(--mono); font-weight:700;
+    padding:2px 6px; border-radius:3px; letter-spacing:0.06em;
+  }
+  .src-hubspot { background:rgba(0,200,255,0.1); color:var(--cyan); border:1px solid rgba(0,200,255,0.2); }
+  .src-sap { background:rgba(255,215,64,0.1); color:var(--yellow); border:1px solid rgba(255,215,64,0.2); }
+
+  /* GAP indicator */
+  .gap-bar {
+    margin-top:16px; padding:14px 18px; border-radius:10px;
+    background: rgba(255,61,113,0.07); border:1px solid rgba(255,61,113,0.18);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .gap-bar .gap-val { font-family:var(--mono); font-size:18px; font-weight:800; color:var(--red); }
+  .gap-bar .gap-label { font-size:11px; color:var(--text3); }
+  .gap-bar .coverage { font-family:var(--mono); font-size:13px; font-weight:700; }
+
+  /* Budget progress ring (big) */
+  .budget-ring-card {
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:16px; text-align:center;
+  }
+
+  /* ─── FUNNEL ─── */
+  .funnel-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; }
+  .funnel-stage {
+    background:var(--glass); border:1px solid var(--border);
+    border-radius:14px; padding:16px 14px; text-align:center;
+    position:relative; cursor:default;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .funnel-stage:hover { transform:translateY(-3px); border-color:var(--border2); }
+  .funnel-stage-prob {
+    font-family:var(--mono); font-size:11px; font-weight:700;
+    padding:3px 10px; border-radius:20px; display:inline-block; margin-bottom:10px;
+  }
+  .funnel-stage-val { font-family:var(--mono); font-size:19px; font-weight:800; margin-bottom:4px; }
+  .funnel-stage-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; }
+  .funnel-stage-n { font-size:11px; color:var(--text2); }
+  .funnel-arrow {
+    position:absolute; right:-8px; top:50%; transform:translateY(-50%);
+    width:16px; height:16px; display:flex; align-items:center; justify-content:center;
+    font-size:10px; color:var(--text3); z-index:2;
+  }
+  .funnel-bar-mini { height:4px; border-radius:2px; margin-top:10px; transition:width 0.8s; }
+
+  /* ─── AGENT SCORECARDS ─── */
+  .agents-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .agent-card {
+    background:var(--glass); border:1px solid var(--border);
+    border-radius:16px; padding:20px;
+    position:relative; overflow:hidden;
+  }
+  .agent-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background: var(--agent-color, var(--orange));
+  }
+  .agent-name { font-size:15px; font-weight:700; margin-bottom:16px; }
+  .agent-rows { display:flex; flex-direction:column; gap:10px; }
+  .agent-row { display:flex; align-items:center; gap:10px; }
+  .agent-row-label { font-size:11px; color:var(--text2); width:110px; flex-shrink:0; }
+  .agent-row-bar { flex:1; height:6px; background:rgba(255,255,255,0.06); border-radius:3px; overflow:hidden; }
+  .agent-row-fill { height:100%; border-radius:3px; transition:width 1s; }
+  .agent-row-val { font-family:var(--mono); font-size:11px; font-weight:700; width:58px; text-align:right; flex-shrink:0; }
+  .agent-footer {
+    margin-top:16px; padding-top:14px; border-top:1px solid var(--border);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .agent-stat { text-align:center; }
+  .agent-stat-val { font-family:var(--mono); font-size:14px; font-weight:700; }
+  .agent-stat-lbl { font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.08em; margin-top:2px; }
+
+  /* ─── DELIVERY HEALTH GRID ─── */
+  .delivery-table { width:100%; border-collapse:collapse; }
+  .delivery-table th {
+    font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:var(--text3);
+    padding:8px 10px; text-align:left; border-bottom:1px solid var(--border);
+    font-weight:600;
+  }
+  .delivery-table th.r { text-align:right; }
+  .delivery-table td { padding:8px 10px; font-size:12px; border-bottom:1px solid rgba(255,255,255,0.03); }
+  .delivery-table tr:hover td { background:rgba(255,255,255,0.02); }
+  .adv-ring-wrap { display:inline-flex; align-items:center; gap:8px; }
+  .adv-ring { width:28px; height:28px; }
+  .adv-val { font-family:var(--mono); font-size:11px; font-weight:700; }
+  .age-pill {
+    display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700;
+    padding:2px 8px; border-radius:10px;
+  }
+  .fam-tag {
+    display:inline-block; font-size:9px; padding:1px 7px; border-radius:3px;
+    font-family:var(--mono); letter-spacing:0.04em;
+  }
+  .alert-row td { background:rgba(255,61,113,0.03); }
+  .alert-indicator { color:var(--red); font-size:12px; }
+  .ok-indicator { color:var(--green); font-size:12px; }
+
+  /* ─── TIM-AICA SECTION ─── */
+  .tim-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .tim-prob-row {
+    display:flex; align-items:center; gap:10px; padding:8px 0;
+    border-bottom:1px solid rgba(255,255,255,0.04);
+  }
+  .tim-prob-label { width:42px; font-family:var(--mono); font-size:11px; font-weight:700; }
+  .tim-prob-bar-wrap { flex:1; height:20px; position:relative; }
+  .tim-prob-bar-bg { position:absolute; inset:0; background:rgba(255,255,255,0.04); border-radius:4px; }
+  .tim-prob-bar-fill { position:absolute; left:0; top:0; height:100%; border-radius:4px; transition:width 1s; display:flex; align-items:center; padding-left:8px; }
+  .tim-prob-n { width:30px; text-align:center; font-size:10px; color:var(--text3); }
+  .tim-prob-val { width:80px; text-align:right; font-family:var(--mono); font-size:12px; font-weight:700; }
+
+  /* ─── CHART CANVAS ─── */
+  .chart-box { position:relative; width:100%; }
+
+  /* ─── RISK MATRIX ─── */
+  .risk-matrix-wrap { position:relative; }
+  .risk-axis-label { font-size:10px; color:var(--text3); font-family:var(--mono); text-transform:uppercase; letter-spacing:0.06em; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    margin-top:40px; padding:16px 28px;
+    border-top:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:10px; color:var(--text3); font-family:var(--mono);
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeInUp {
+    from { opacity:0; transform:translateY(16px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+  .fade-in { animation: fadeInUp 0.5s ease forwards; }
+  .fade-in-2 { animation: fadeInUp 0.5s 0.1s ease both; }
+  .fade-in-3 { animation: fadeInUp 0.5s 0.2s ease both; }
+
+  /* ─── TOOLTIP ─── */
+  .tt {
+    background:rgba(11,17,32,0.96); border:1px solid var(--border2);
+    border-radius:8px; padding:10px 14px; font-size:11px;
+    font-family:var(--mono); box-shadow:0 8px 24px rgba(0,0,0,0.4);
+    pointer-events:none;
+  }
+
+  /* ─── TABS ─── */
+  .tab-nav { display:flex; gap:4px; margin-bottom:16px; }
+  .tab-btn {
+    padding:6px 16px; border-radius:8px; border:1px solid var(--border);
+    background:transparent; color:var(--text2); font-size:11px; cursor:pointer;
+    font-family:'Inter',sans-serif; font-weight:500; letter-spacing:0.03em;
+    transition:all 0.15s;
+  }
+  .tab-btn.active {
+    background:rgba(255,107,43,0.12); border-color:rgba(255,107,43,0.3);
+    color:var(--orange); font-weight:700;
+  }
+  .tab-pane { display:none; }
+  .tab-pane.active { display:block; }
+
+  /* ─── MINI SPARKLINE ─── */
+  .sparkline { display:inline-block; vertical-align:middle; }
+
+  /* ─── GRID HELPERS ─── */
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:18px; }
+  .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+
+  /* ─── SCORE BAND ─── */
+  .score-band {
+    display:flex; align-items:center; gap:8px;
+    padding:10px 16px; border-radius:10px;
+    background:rgba(0,230,118,0.07); border:1px solid rgba(0,230,118,0.15);
+    margin-bottom:16px;
+  }
+  .score-band-icon { font-size:18px; }
+  .score-band-text { font-size:12px; color:var(--text2); }
+  .score-band-text strong { color:var(--green); }
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══════════════════════════════════════════════════════════════ -->
+<header>
+  <div class="header-inner">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="logo-mark">E</div>
+      <div>
+        <div class="brand-text">ELLYSSE</div>
+        <div class="brand-sub">WAR ROOM · COMMERCIAL INTELLIGENCE · 24/03/2026</div>
+      </div>
+    </div>
+    <div class="header-kpis">
+      <div class="hkpi">
+        <div class="hkpi-val" id="h-ordini">€692k</div>
+        <div class="hkpi-lbl">Ordini ≥80%</div>
+      </div>
+      <div style="width:1px;height:28px;background:var(--border);"></div>
+      <div class="hkpi">
+        <div class="hkpi-val" style="color:var(--cyan);" id="h-pipeline">€1.57M</div>
+        <div class="hkpi-lbl">Pipeline totale</div>
+      </div>
+      <div style="width:1px;height:28px;background:var(--border);"></div>
+      <div class="hkpi">
+        <div class="hkpi-val" style="color:var(--green);">38.5%</div>
+        <div class="hkpi-lbl">Budget coverage</div>
+      </div>
+    </div>
+    <div class="header-badge">
+      <div class="pulse-dot"></div>
+      LIVE DATA · HUBSPOT
+    </div>
+  </div>
+</header>
+
+<!-- ═══ SHELL ════════════════════════════════════════════════════════════════ -->
+<div class="shell">
+
+  <!-- ── HERO KPI RINGS ─────────────────────────────────────────────────────── -->
+  <div class="hero-section fade-in">
+
+    <!-- Ring 1: Budget Ordini -->
+    <div class="ring-card" style="--glow-color:rgba(255,107,43,0.08);">
+      <div class="ring-wrap">
+        <svg class="ring-svg" width="96" height="96" viewBox="0 0 96 96">
+          <circle class="ring-bg" cx="48" cy="48" r="40" stroke-width="7"/>
+          <circle class="ring-fill" id="ring1" cx="48" cy="48" r="40" stroke-width="7"
+            stroke="var(--orange)" stroke-dasharray="251.3" stroke-dashoffset="251.3"/>
+        </svg>
+        <div class="ring-label">
+          <div class="ring-pct" id="ring1-pct" style="color:var(--orange);">0%</div>
+          <div class="ring-sub-lbl">TARGET</div>
+        </div>
+      </div>
+      <div class="ring-info">
+        <div class="ring-title">Ordini vs Budget</div>
+        <div class="ring-value" style="color:var(--orange);">€692k</div>
+        <div class="ring-detail">su obiettivo <strong>€1.8M</strong><br>ordini confermati ≥80%</div>
+        <div class="ring-tag" style="background:rgba(255,107,43,0.12);color:var(--orange);border:1px solid rgba(255,107,43,0.25);">38.5% · ACCELERARE</div>
+      </div>
+    </div>
+
+    <!-- Ring 2: Ricavi attesi -->
+    <div class="ring-card" style="--glow-color:rgba(0,200,255,0.07);">
+      <div class="ring-wrap">
+        <svg class="ring-svg" width="96" height="96" viewBox="0 0 96 96">
+          <circle class="ring-bg" cx="48" cy="48" r="40" stroke-width="7"/>
+          <circle class="ring-fill" id="ring2" cx="48" cy="48" r="40" stroke-width="7"
+            stroke="var(--cyan)" stroke-dasharray="251.3" stroke-dashoffset="251.3"/>
+        </svg>
+        <div class="ring-label">
+          <div class="ring-pct" id="ring2-pct" style="color:var(--cyan);">0%</div>
+          <div class="ring-sub-lbl">BUDGET</div>
+        </div>
+      </div>
+      <div class="ring-info">
+        <div class="ring-title">Ricavi Attesi 2026</div>
+        <div class="ring-value" style="color:var(--cyan);">€1.49M</div>
+        <div class="ring-detail">su obiettivo <strong>€2.3M</strong><br>incl. SAP manutenzioni</div>
+        <div class="ring-tag" style="background:rgba(0,200,255,0.1);color:var(--cyan);border:1px solid rgba(0,200,255,0.2);">64.8% · IN LINEA</div>
+      </div>
+    </div>
+
+    <!-- Ring 3: ARR ratio -->
+    <div class="ring-card" style="--glow-color:rgba(0,230,118,0.07);">
+      <div class="ring-wrap">
+        <svg class="ring-svg" width="96" height="96" viewBox="0 0 96 96">
+          <circle class="ring-bg" cx="48" cy="48" r="40" stroke-width="7"/>
+          <circle class="ring-fill" id="ring3" cx="48" cy="48" r="40" stroke-width="7"
+            stroke="var(--green)" stroke-dasharray="251.3" stroke-dashoffset="251.3"/>
+        </svg>
+        <div class="ring-label">
+          <div class="ring-pct" id="ring3-pct" style="color:var(--green);">0%</div>
+          <div class="ring-sub-lbl">ARR</div>
+        </div>
+      </div>
+      <div class="ring-info">
+        <div class="ring-title">ARR vs Una Tantum</div>
+        <div class="ring-value" style="color:var(--green);">€320k</div>
+        <div class="ring-detail">ARR su €692k ordini<br>base ricorrente solida</div>
+        <div class="ring-tag" style="background:rgba(0,230,118,0.1);color:var(--green);border:1px solid rgba(0,230,118,0.2);">46.2% · RECURRING</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SEZIONE 1: REVENUE RACE ──────────────────────────────────────────── -->
+  <div class="section-header fade-in-2">
+    <div class="section-icon" style="background:rgba(255,107,43,0.1);">🏁</div>
+    <div class="section-title">Revenue Race — Waterfall verso il budget</div>
+    <div class="section-line"></div>
+    <div class="section-sub">Budget €2.3M · Elaborazione 24/03/2026</div>
+  </div>
+
+  <div class="waterfall-grid fade-in-2">
+    <div class="card">
+      <div class="card-title">Contributi cumulativi ai ricavi 2026</div>
+
+      <!-- Waterfall rows -->
+      <div id="wf-container">
+        <!-- populated by JS -->
+      </div>
+
+      <div class="gap-bar" id="gap-bar">
+        <div>
+          <div class="gap-label">Gap verso budget</div>
+        </div>
+        <div class="gap-val" id="gap-val">—</div>
+        <div style="text-align:right;">
+          <div class="coverage" id="coverage-val">—</div>
+          <div style="font-size:10px;color:var(--text3);">coverage</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Big budget ring -->
+    <div class="card budget-ring-card">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Obiettivo annuo</div>
+      <div style="position:relative;width:180px;height:180px;">
+        <svg style="transform:rotate(-90deg);width:180px;height:180px;" viewBox="0 0 180 180">
+          <circle fill="none" cx="90" cy="90" r="80" stroke="rgba(255,255,255,0.05)" stroke-width="12"/>
+          <!-- Gap (red) -->
+          <circle fill="none" id="budget-ring-gap" cx="90" cy="90" r="80"
+            stroke="rgba(255,61,113,0.2)" stroke-width="12"
+            stroke-dasharray="502.65" stroke-dashoffset="0"/>
+          <!-- Fill (cyan) -->
+          <circle fill="none" id="budget-ring-fill" cx="90" cy="90" r="80"
+            stroke="var(--cyan)" stroke-width="12" stroke-linecap="round"
+            stroke-dasharray="502.65" stroke-dashoffset="502.65"
+            style="transition:stroke-dashoffset 1.4s cubic-bezier(0.4,0,0.2,1);"/>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(0);">
+          <div style="font-family:var(--mono);font-size:28px;font-weight:800;color:var(--cyan);" id="big-ring-pct">0%</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px;">del target</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:8px;">
+        <div style="font-family:var(--mono);font-size:22px;font-weight:800;" id="big-ring-val">€0</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px;">ricavi attesi vs <strong style="color:var(--text2);">€2.3M</strong></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px;width:100%;">
+        <div style="text-align:center;padding:8px;background:rgba(255,255,255,0.04);border-radius:8px;border:1px solid var(--border);">
+          <div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--yellow);">€367k</div>
+          <div style="font-size:9px;color:var(--text3);margin-top:2px;text-transform:uppercase;letter-spacing:0.06em;">Manutenzioni</div>
+        </div>
+        <div style="text-align:center;padding:8px;background:rgba(255,255,255,0.04);border-radius:8px;border:1px solid var(--border);">
+          <div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--red);" id="gap-mini">—</div>
+          <div style="font-size:9px;color:var(--text3);margin-top:2px;text-transform:uppercase;letter-spacing:0.06em;">Gap SAP</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SEZIONE 2: PIPELINE FUNNEL ──────────────────────────────────────── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(0,200,255,0.1);">🔮</div>
+    <div class="section-title">Pipeline Funnel — da certezza a potenziale</div>
+    <div class="section-line"></div>
+    <div class="section-sub">Fonte: HubSpot · 31 deal in delivery</div>
+  </div>
+
+  <div class="funnel-grid fade-in-3">
+    <!-- Stage: Delivery (100%) -->
+    <div class="funnel-stage">
+      <div class="funnel-stage-prob" style="background:rgba(0,230,118,0.12);color:var(--green);">100% / IN CORSO</div>
+      <div class="funnel-stage-val" style="color:var(--green);">€344k</div>
+      <div class="funnel-stage-label">Delivery</div>
+      <div class="funnel-stage-n">31 commesse</div>
+      <div class="funnel-bar-mini" style="background:var(--green);width:100%;"></div>
+      <div class="funnel-arrow">›</div>
+    </div>
+    <!-- Stage: 95% -->
+    <div class="funnel-stage">
+      <div class="funnel-stage-prob" style="background:rgba(0,200,255,0.1);color:var(--cyan);">≥95%</div>
+      <div class="funnel-stage-val" style="color:var(--cyan);">€37k</div>
+      <div class="funnel-stage-label">Quasi chiuse</div>
+      <div class="funnel-stage-n">2 trattative</div>
+      <div class="funnel-bar-mini" style="background:var(--cyan);width:11%;"></div>
+      <div class="funnel-arrow">›</div>
+    </div>
+    <!-- Stage: 90% -->
+    <div class="funnel-stage">
+      <div class="funnel-stage-prob" style="background:rgba(26,111,212,0.12);color:#4a9fd4;">90%</div>
+      <div class="funnel-stage-val" style="color:#4a9fd4;">€67k</div>
+      <div class="funnel-stage-label">Alta prob.</div>
+      <div class="funnel-stage-n">5 trattative</div>
+      <div class="funnel-bar-mini" style="background:#4a9fd4;width:20%;"></div>
+      <div class="funnel-arrow">›</div>
+    </div>
+    <!-- Stage: 80% -->
+    <div class="funnel-stage" style="border-color:rgba(255,107,43,0.25);">
+      <div class="funnel-stage-prob" style="background:rgba(255,107,43,0.1);color:var(--orange);">80%</div>
+      <div class="funnel-stage-val" style="color:var(--orange);">€244k</div>
+      <div class="funnel-stage-label">Avanzate</div>
+      <div class="funnel-stage-n">6 trattative</div>
+      <div class="funnel-bar-mini" style="background:var(--orange);width:71%;"></div>
+      <div class="funnel-arrow">›</div>
+    </div>
+    <!-- Stage: 70% -->
+    <div class="funnel-stage">
+      <div class="funnel-stage-prob" style="background:rgba(255,215,64,0.1);color:var(--yellow);">70%</div>
+      <div class="funnel-stage-val" style="color:var(--yellow);">€635k</div>
+      <div class="funnel-stage-label">In sviluppo</div>
+      <div class="funnel-stage-n">25 trattative</div>
+      <div class="funnel-bar-mini" style="background:var(--yellow);width:100%;"></div>
+    </div>
+  </div>
+
+  <!-- Expected value summary -->
+  <div class="grid-4" style="margin-top:14px;">
+    <div class="card" style="text-align:center;padding:14px;">
+      <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Valore Atteso ≥70%</div>
+      <div style="font-family:var(--mono);font-size:18px;font-weight:800;color:var(--text);">€1.33M</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:3px;">media ponderata</div>
+    </div>
+    <div class="card" style="text-align:center;padding:14px;">
+      <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Valore Atteso ≥80%</div>
+      <div style="font-family:var(--mono);font-size:18px;font-weight:800;color:var(--orange);">€692k</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:3px;">ordini confermati</div>
+    </div>
+    <div class="card" style="text-align:center;padding:14px;">
+      <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">ARR totale ≥80%</div>
+      <div style="font-family:var(--mono);font-size:18px;font-weight:800;color:var(--green);">€320k</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:3px;">ricavi ricorrenti</div>
+    </div>
+    <div class="card" style="text-align:center;padding:14px;">
+      <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">TIM-AICA pipeline</div>
+      <div style="font-family:var(--mono);font-size:18px;font-weight:800;color:var(--cyan);">€1.56M</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:3px;">32 trattative</div>
+    </div>
+  </div>
+
+  <!-- ── SEZIONE 3: AGENT PERFORMANCE ─────────────────────────────────────── -->
+  <div class="section-header" style="margin-top:28px;">
+    <div class="section-icon" style="background:rgba(0,230,118,0.1);">🎯</div>
+    <div class="section-title">Performance Agenti — scorecard comparativa</div>
+    <div class="section-line"></div>
+    <div class="section-sub">Normalizzato sul massimo per categoria</div>
+  </div>
+
+  <div class="agents-grid">
+    <!-- A. Benassi -->
+    <div class="agent-card" style="--agent-color:#FF6B2B;">
+      <div class="agent-name">A. Benassi <span style="font-size:11px;font-weight:400;color:var(--text3);">— 24 trattative</span></div>
+      <div class="agent-rows">
+        <div class="agent-row">
+          <div class="agent-row-label">Volume pipeline</div>
+          <div class="agent-row-bar"><div class="agent-row-fill" style="width:100%;background:var(--orange);"></div></div>
+          <div class="agent-row-val" style="color:var(--orange);">€974k</div>
+        </div>
+        <div class="agent-row">
+          <div class="agent-row-label">ARR pipeline</div>
+          <div class="agent-row-bar"><div class="agent-row-fill" style="width:100%;background:var(--green);"></div></div>
+          <div class="agent-row-val" style="color:var(--green);">€423k</div>
+        </div>
+        <div class="agent-row">
+          <div class="agent-row-label">Ordini ≥80%</div>
+          <div class="agent-row-bar"><div class="agent-row-fill" style="width:100%;background:var(--cyan);"></div></div>
+          <div class="agent-row-val" style="color:var(--cyan);">€272k</div>
+        </div>
+        <div class="agent-row">
+          <div class="agent-row-label">Conv. ordini</div>
+          <div class="agent-row-bar"><div class="agent-row-fill" style="width:28%;background:#4a5a78;"></div></div>
+          <div class="agent-row-val" style="color:var(--text2);">28%</div>
+        </div>
+      </div>
+      <div class="agent-footer">
+        <div class="agent-stat"><div class="agent-stat-val" style="color:var(--orange);">€974k</div><div class="agent-stat-lbl">Volume</div></div>
+        <div class="agent-stat"><div class="agent-stat-val" style="color:var(--green);">43.4%</div><div class="agent-stat-lbl">ARR%</div></div>
+        <div class="agent-stat"><div class="agent-stat-val" style="color:var(--cyan);">24</div><div class="agent-stat-lbl">Deals</div></div>
+        <div class="agent-stat">
+          <div style="font-size:18px;font-weight:800;font-family:var(--mono);color:var(--orange);">🥇</div>
+          <div class="agent-stat-lbl">TOP VOL</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- F. Di Russo -->
+    <div class="agent-card" style="--agent-color:#00C8FF;">
+      <div class="agent-name">F. Di Russo <span style="font-size:11px;font-weight:400;color:var(--text3);">— 16 trattative</span></div>
+      <div class="agent-rows">
+        <div class="agent-row">
+          <div class="agent-row-label">Volume pipeline</div>
+          <div class="agent-row-bar"><div class="agent-row-fill" style="width:29%;background:var(--cyan);"></div></div>
+          <div class="agent-row-val" style="color:var(--cyan);">€280k</div>
+        </div>
+        <div class="agent-row">
+          <div class="agent-row-label">ARR pipeline</div>
+          <div class="agent-row-bar"><div class="agent-row-fill" style="width:34%;background:var(--green);"></div></div>
+          <div class="agent-row-val" style="color:var(--green);">€144k</div>
+        </div>
+        <div class="agent-row">
+          <div class="agent-row-label">Ordini ≥80%</div>
+          <div class="agent-row-bar"><div class="agent-row-fill" style="width:76%;background:var(--cyan);"></div></div>
+          <div class="agent-row-val" style="color:var(--cyan);">€207k</div>
+        </div>
+        <div class="agent-row">
+          <div class="agent-row-label">Conv. ordini</div>
+          <div class="agent-row-bar"><div class="agent-row-fill" style="width:74%;background:#1a6fd4;"></div></div>
+          <div class="agent-row-val" style="color:#4a9fd4);">74%</div>
+        </div>
+      </div>
+      <div class="agent-footer">
+        <div class="agent-stat"><div class="agent-stat-val" style="color:var(--cyan);">€280k</div><div class="agent-stat-lbl">Volume</div></div>
+        <div class="agent-stat"><div class="agent-stat-val" style="color:var(--green);">51.4%</div><div class="agent-stat-lbl">ARR%</div></div>
+        <div class="agent-stat"><div class="agent-stat-val" style="color:var(--cyan);">16</div><div class="agent-stat-lbl">Deals</div></div>
+        <div class="agent-stat">
+          <div style="font-size:18px;font-weight:800;font-family:var(--mono);color:var(--cyan);">🏆</div>
+          <div class="agent-stat-lbl">TOP CONV</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- M. Ferrarini -->
+    <div class="agent-card" style="--agent-color:#00E676;">
+      <div class="agent-name">M. Ferrarini <span style="font-size:11px;font-weight:400;color:var(--text3);">— 35 trattative</span></div>
+      <div class="agent-rows">
+        <div class="agent-row">
+          <div class="agent-row-label">Volume pipeline</div>
+          <div class="agent-row-bar"><div class="agent-row-fill" style="width:45%;background:var(--green);"></div></div>
+          <div class="agent-row-val" style="color:var(--green);">€440k</div>
+        </div>
+        <div class="agent-row">
+          <div class="agent-row-label">ARR pipeline</div>
+          <div class="agent-row-bar"><div class="agent-row-fill" style="width:57%;background:var(--green);"></div></div>
+          <div class="agent-row-val" style="color:var(--green);">€242k</div>
+        </div>
+        <div class="agent-row">
+          <div class="agent-row-label">Ordini ≥80%</div>
+          <div class="agent-row-bar"><div class="agent-row-fill" style="width:78%;background:var(--green);"></div></div>
+          <div class="agent-row-val" style="color:var(--green);">€212k</div>
+        </div>
+        <div class="agent-row">
+          <div class="agent-row-label">Conv. ordini</div>
+          <div class="agent-row-bar"><div class="agent-row-fill" style="width:48%;background:#1a8c4e;"></div></div>
+          <div class="agent-row-val" style="color:var(--green);">48%</div>
+        </div>
+      </div>
+      <div class="agent-footer">
+        <div class="agent-stat"><div class="agent-stat-val" style="color:var(--green);">€440k</div><div class="agent-stat-lbl">Volume</div></div>
+        <div class="agent-stat"><div class="agent-stat-val" style="color:var(--green);">55.0%</div><div class="agent-stat-lbl">ARR%</div></div>
+        <div class="agent-stat"><div class="agent-stat-val" style="color:var(--green);">35</div><div class="agent-stat-lbl">Deals</div></div>
+        <div class="agent-stat">
+          <div style="font-size:18px;font-weight:800;font-family:var(--mono);color:var(--green);">📦</div>
+          <div class="agent-stat-lbl">TOP ARR%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart radar agenti -->
+  <div class="card" style="margin-top:18px;">
+    <div class="grid-2" style="gap:0;">
+      <div>
+        <div class="card-title">Radar performance normalizzato (100 = best)</div>
+        <div class="chart-box" style="height:260px;">
+          <canvas id="radarChart"></canvas>
+        </div>
+      </div>
+      <div style="border-left:1px solid var(--border);padding-left:20px;">
+        <div class="card-title">Ordini confermati vs pipeline per agente</div>
+        <div class="chart-box" style="height:260px;">
+          <canvas id="agentBarChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SEZIONE 4: DELIVERY HEALTH ──────────────────────────────────────── -->
+  <div class="section-header" style="margin-top:28px;">
+    <div class="section-icon" style="background:rgba(255,61,113,0.1);">⚡</div>
+    <div class="section-title">Delivery Health — commesse attive</div>
+    <div class="section-line"></div>
+    <div class="section-sub" id="alert-count-badge" style="color:var(--red);font-weight:700;">⚠ Alerts: caricamento...</div>
+  </div>
+
+  <div class="card">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('all')">Tutte le commesse</button>
+      <button class="tab-btn" onclick="switchTab('alerts')" id="tab-alerts-btn">⚠ In alert</button>
+      <button class="tab-btn" onclick="switchTab('ok')" id="tab-ok-btn">✓ On track</button>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <table class="delivery-table">
+        <thead>
+          <tr>
+            <th style="width:24px;"></th>
+            <th>Cliente</th>
+            <th>Agente</th>
+            <th class="r">Importo</th>
+            <th class="r">ARR</th>
+            <th>Avanzamento</th>
+            <th class="r">Età</th>
+            <th>Famiglia</th>
+          </tr>
+        </thead>
+        <tbody id="delivery-tbody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── SEZIONE 5: TIM-AICA SPOTLIGHT ────────────────────────────────────── -->
+  <div class="section-header" style="margin-top:28px;">
+    <div class="section-icon" style="background:rgba(255,215,64,0.1);">📡</div>
+    <div class="section-title">TIM-AICA Spotlight — pipeline dedicata</div>
+    <div class="section-line"></div>
+    <div class="section-sub">32 trattative · €1.56M totale</div>
+  </div>
+
+  <div class="tim-grid">
+    <div class="card">
+      <div class="card-title">Pipeline TIM per fascia di probabilità</div>
+      <div id="tim-rows"></div>
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:11px;color:var(--text3);">Totale pipeline TIM-AICA</span>
+        <span style="font-family:var(--mono);font-size:16px;font-weight:800;color:var(--yellow);">€1,559,820</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Distribuzione TIM per probabilità</div>
+      <div class="chart-box" style="height:240px;">
+        <canvas id="timChart"></canvas>
+      </div>
+      <div class="grid-2" style="margin-top:14px;gap:10px;">
+        <div style="padding:10px;background:rgba(0,230,118,0.06);border:1px solid rgba(0,230,118,0.15);border-radius:8px;text-align:center;">
+          <div style="font-family:var(--mono);font-size:14px;font-weight:800;color:var(--green);">€33.5k</div>
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;">Delivery (100%)</div>
+        </div>
+        <div style="padding:10px;background:rgba(255,107,43,0.06);border:1px solid rgba(255,107,43,0.15);border-radius:8px;text-align:center;">
+          <div style="font-family:var(--mono);font-size:14px;font-weight:800;color:var(--orange);">€132.3k</div>
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;">Alta prob. ≥80%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SEZIONE 6: METRICHE FINALI ──────────────────────────────────────── -->
+  <div class="section-header" style="margin-top:28px;">
+    <div class="section-icon" style="background:rgba(255,107,43,0.1);">📊</div>
+    <div class="section-title">Azioni prioritarie — Focus meeting</div>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card" style="border-color:rgba(255,61,113,0.25);">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--red);margin-bottom:12px;font-weight:700;">🚨 Critico</div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Aggiornare SAP Q1</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.6;">I ricavi fatturati gen–mar sono placeholder. Richiedere a Christian Can i dati SAP per completare il waterfall e verificare coverage reale.</div>
+      <div style="margin-top:12px;padding:8px 12px;background:rgba(255,61,113,0.07);border-radius:6px;font-size:11px;color:var(--red);font-family:var(--mono);">OWNER: Christian Can · ASAP</div>
+    </div>
+    <div class="card" style="border-color:rgba(255,107,43,0.25);">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--orange);margin-bottom:12px;font-weight:700;">⚡ Urgente</div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Sbloccare CEF Farmaceutica</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.6;">€124k deal al 80%, il più grande della pipeline. Conversione critica per avvicinarsi al target ordini €1.8M. Benassi ownership.</div>
+      <div style="margin-top:12px;padding:8px 12px;background:rgba(255,107,43,0.07);border-radius:6px;font-size:11px;color:var(--orange);font-family:var(--mono);">OWNER: A. Benassi · Q2/2026</div>
+    </div>
+    <div class="card" style="border-color:rgba(0,200,255,0.2);">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--cyan);margin-bottom:12px;font-weight:700;">🎯 Focus</div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Chiudere Europa Tourist Group</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.6;">€178k al 70% — la trattativa di maggior valore in fascia 70%. Spostare alla fascia 80%+ sblocca €150k+ di valore atteso.</div>
+      <div style="margin-top:12px;padding:8px 12px;background:rgba(0,200,255,0.07);border-radius:6px;font-size:11px;color:var(--cyan);font-family:var(--mono);">OWNER: A. Benassi · NEXT 30gg</div>
+    </div>
+  </div>
+
+</div><!-- /.shell -->
+
+<footer>
+  <div>ELLYSSE · Dashboard Commerciale · HubSpot 24/03/2026 · <span style="color:var(--yellow);">⚠ SAP Q1 = placeholder</span></div>
+  <div>Ordini ≥80%: <strong style="color:var(--orange);">€692k</strong> · Budget: €1.8M · Coverage: <strong style="color:var(--orange);">38.5%</strong></div>
+</footer>
+
+<script>
+// ─── DATA ──────────────────────────────────────────────────────────────────────
+const CONTRATTI_DELIVERY = [
+  { agente:"A. Benassi",   cliente:"GRUPPO ARGENTA",           importo:20314.80, arr:20314.80, famiglia:"On Prem",  avanzamento:90, data_ordine:"2025-10-15" },
+  { agente:"A. Benassi",   cliente:"ComTel",                   importo:11900.00, arr:11900.00, famiglia:"N.D.",     avanzamento:75, data_ordine:"2025-11-20" },
+  { agente:"A. Benassi",   cliente:"FONDA SRL",                importo:24573.60, arr:19140.00, famiglia:"Cloud",    avanzamento:60, data_ordine:"2026-01-10" },
+  { agente:"A. Benassi",   cliente:"FAAC",                     importo:1872.00,  arr:0,        famiglia:"On Prem",  avanzamento:45, data_ordine:"2025-12-01" },
+  { agente:"A. Benassi",   cliente:"FAAC (2)",                 importo:3796.20,  arr:0,        famiglia:"On Prem",  avanzamento:55, data_ordine:"2025-12-15" },
+  { agente:"A. Benassi",   cliente:"SIRAM SPA",                importo:10542.46, arr:7916.00,  famiglia:"N.D.",     avanzamento:40, data_ordine:"2026-02-01" },
+  { agente:"F. Di Russo",  cliente:"GRUPPO BUFFETTI",          importo:394.29,   arr:0,        famiglia:"N.D.",     avanzamento:20, data_ordine:"2026-03-01" },
+  { agente:"F. Di Russo",  cliente:"CASA DI CURA V.S. MARCO",  importo:30300.00, arr:30300.00, famiglia:"N.D.",     avanzamento:95, data_ordine:"2025-09-20" },
+  { agente:"F. Di Russo",  cliente:"TIM - Large NE",           importo:26301.24, arr:8078.00,  famiglia:"N.D.",     avanzamento:70, data_ordine:"2025-11-05" },
+  { agente:"F. Di Russo",  cliente:"FASTWEB SPA",              importo:2945.00,  arr:2945.00,  famiglia:"On Prem",  avanzamento:80, data_ordine:"2026-01-20" },
+  { agente:"F. Di Russo",  cliente:"CESARE POZZO",             importo:14554.00, arr:14554.00, famiglia:"N.D.",     avanzamento:85, data_ordine:"2025-12-10" },
+  { agente:"F. Di Russo",  cliente:"PRINCIPE HOTEL MGMT",      importo:11700.00, arr:12900.00, famiglia:"TIM AICA", avanzamento:50, data_ordine:"2026-02-15" },
+  { agente:"F. Di Russo",  cliente:"DATACONTACT S.R.L.",       importo:3948.00,  arr:3948.00,  famiglia:"Cloud",    avanzamento:65, data_ordine:"2026-01-25" },
+  { agente:"F. Di Russo",  cliente:"L'AUTOMOBILE ROMA",        importo:836.00,   arr:836.00,   famiglia:"Cloud",    avanzamento:45, data_ordine:"2026-02-10" },
+  { agente:"F. Di Russo",  cliente:"Plurima",                  importo:21760.96, arr:12698.00, famiglia:"TIM AICA", avanzamento:88, data_ordine:"2025-10-30" },
+  { agente:"M. Ferrarini", cliente:"AD Consulting (1)",        importo:500.00,   arr:500.00,   famiglia:"On Prem",  avanzamento:55, data_ordine:"2025-11-15" },
+  { agente:"M. Ferrarini", cliente:"ALASCOM S.R.L. (1)",       importo:7500.00,  arr:7500.00,  famiglia:"On Prem",  avanzamento:70, data_ordine:"2026-01-05" },
+  { agente:"M. Ferrarini", cliente:"SAPIO PRODUZIONE (1)",     importo:32770.00, arr:32770.00, famiglia:"N.D.",     avanzamento:100,data_ordine:"2025-09-15" },
+  { agente:"M. Ferrarini", cliente:"TEXA",                     importo:1800.00,  arr:1800.00,  famiglia:"N.D.",     avanzamento:35, data_ordine:"2026-02-20" },
+  { agente:"M. Ferrarini", cliente:"STT Servizi Telematici",   importo:3850.00,  arr:3530.00,  famiglia:"On Prem",  avanzamento:60, data_ordine:"2025-12-20" },
+  { agente:"M. Ferrarini", cliente:"RIVIERABANCA",             importo:800.00,   arr:800.00,   famiglia:"On Prem",  avanzamento:75, data_ordine:"2026-01-15" },
+  { agente:"M. Ferrarini", cliente:"Istituti Clinici Zucchi",  importo:8400.00,  arr:8400.00,  famiglia:"On Prem",  avanzamento:80, data_ordine:"2025-11-25" },
+  { agente:"M. Ferrarini", cliente:"SAPIO PRODUZIONE (2)",     importo:2980.00,  arr:2980.00,  famiglia:"N.D.",     avanzamento:50, data_ordine:"2026-02-05" },
+  { agente:"M. Ferrarini", cliente:"SER-VIS S.R.L.",           importo:3000.00,  arr:0,        famiglia:"N.D.",     avanzamento:15, data_ordine:"2026-03-10" },
+  { agente:"M. Ferrarini", cliente:"ALASCOM S.R.L. (2)",       importo:13800.00, arr:11750.00, famiglia:"On Prem",  avanzamento:65, data_ordine:"2025-12-05" },
+  { agente:"M. Ferrarini", cliente:"FINTYRE",                  importo:2900.00,  arr:0,        famiglia:"N.D.",     avanzamento:40, data_ordine:"2026-01-08" },
+  { agente:"M. Ferrarini", cliente:"TARGA TELEMATICS",         importo:8400.00,  arr:0,        famiglia:"N.D.",     avanzamento:30, data_ordine:"2025-10-20" },
+  { agente:"M. Ferrarini", cliente:"AD Consulting (2)",        importo:51400.00, arr:19800.00, famiglia:"Cloud",    avanzamento:72, data_ordine:"2025-11-10" },
+  { agente:"M. Ferrarini", cliente:"IWS Industria Welfare (1)",importo:13915.00, arr:13915.00, famiglia:"On Prem",  avanzamento:55, data_ordine:"2026-01-30" },
+  { agente:"M. Ferrarini", cliente:"IWS Industria Welfare (2)",importo:894.00,   arr:894.00,   famiglia:"On Prem",  avanzamento:40, data_ordine:"2026-02-25" },
+  { agente:"M. Ferrarini", cliente:"GCI System Integrator",    importo:1400.00,  arr:1400.00,  famiglia:"On Prem",  avanzamento:25, data_ordine:"2026-03-05" },
+  { agente:"M. Ferrarini", cliente:"IRCCS Ist. Ortopedico",    importo:3295.96,  arr:0,        famiglia:"N.D.",     avanzamento:30, data_ordine:"2026-02-18" },
+];
+
+const TIM_PROB = [
+  { label:"40%", prob:0.4,  n:4,  importo:621493.00 },
+  { label:"50%", prob:0.5,  n:11, importo:307983.96 },
+  { label:"60%", prob:0.6,  n:1,  importo:24235.52  },
+  { label:"70%", prob:0.7,  n:7,  importo:440623.28 },
+  { label:"80%", prob:0.8,  n:4,  importo:98870.48  },
+  { label:"90%", prob:0.9,  n:1,  importo:151.20    },
+  { label:"95%", prob:0.95, n:1,  importo:33222.00  },
+  { label:"100%",prob:1.0,  n:2,  importo:33460.96  },
+];
+
+// ─── UTILS ─────────────────────────────────────────────────────────────────────
+const TODAY = new Date("2026-03-27");
+const fmtK = v => v >= 1e6 ? `€${(v/1e6).toFixed(2).replace(".",",")}M` : v >= 1000 ? `€${Math.round(v/1000)}k` : `€${Math.round(v)}`;
+const fmt  = v => new Intl.NumberFormat("it-IT",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(v);
+const daysFrom = d => Math.floor((TODAY.getTime() - new Date(d).getTime()) / 86400000);
+const si = a => a.reduce((t,r)=>t+r.importo,0);
+const sa = a => a.reduce((t,r)=>t+(r.arr||0),0);
+
+// ─── ANIMATE RINGS ──────────────────────────────────────────────────────────────
+function animateRing(id, pct, pctElemId) {
+  const circ = 251.3;
+  const offset = circ - (pct / 100) * circ;
+  setTimeout(() => {
+    document.getElementById(id).style.strokeDashoffset = offset;
+    let current = 0;
+    const step = () => {
+      current = Math.min(current + pct / 50, pct);
+      const el = document.getElementById(pctElemId);
+      if (el) el.textContent = Math.round(current) + '%';
+      if (current < pct) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, 400);
+}
+
+// ─── WATERFALL ─────────────────────────────────────────────────────────────────
+const BUDGET_RICAVI = 2300000;
+const SAP_MANUTENZIONI = 367000;
+const DI = si(CONTRATTI_DELIVERY);
+const DA = sa(CONTRATTI_DELIVERY);
+
+// T95, T90, T80 importo
+const T95_imp = 36722;
+const T90_imp = 67373.20;
+const T80_imp = 243960.39;
+const T95_arr = 23574;
+const T90_arr = 28256.20;
+const T80_arr = 63727.87;
+
+const ORD = DI + T95_imp + T90_imp + T80_imp;
+const OARD = DA + T95_arr + T90_arr + T80_arr;
+
+const wfComponents = [
+  { label:"Ricavi Q1", sub:"gen–mar 2026", value:0,              max:BUDGET_RICAVI, color:"rgba(255,215,64,0.6)",  source:"sap",     note:"Placeholder SAP" },
+  { label:"RR in cassa", sub:"ARR delivery",value:Math.round(DA),max:BUDGET_RICAVI, color:"#00C8FF",              source:"hubspot", note:"ARR contratti delivery" },
+  { label:"Ricorrenti EoY", sub:"apr–dic",  value:SAP_MANUTENZIONI,max:BUDGET_RICAVI,color:"rgba(255,215,64,0.7)",source:"sap",     note:"Manutenzioni/licenze" },
+  { label:"Delivery residuo",sub:"UT",      value:Math.round(DI-DA),max:BUDGET_RICAVI,color:"#4a9fd4",            source:"hubspot", note:"Una tantum delivery" },
+  { label:"Trattative 80–95%",sub:"pipeline",value:Math.round(T95_imp+T90_imp+T80_imp),max:BUDGET_RICAVI,color:"var(--orange)",source:"hubspot",note:"Pipeline alta prob." },
+];
+
+function buildWaterfall() {
+  const container = document.getElementById('wf-container');
+  let cum = 0;
+  wfComponents.forEach((c, i) => {
+    cum += c.value;
+    const barPct = Math.min((c.value / BUDGET_RICAVI) * 100, 100);
+    const cumPct = Math.min((cum / BUDGET_RICAVI) * 100, 100);
+    const row = document.createElement('div');
+    row.className = 'wf-row';
+    row.innerHTML = `
+      <div class="wf-label">
+        <strong>${c.label}</strong>
+        <span>${c.sub}</span>
+      </div>
+      <div class="wf-bar-wrap">
+        <div class="wf-bar-bg"></div>
+        <div class="wf-bar-fill" data-target="${barPct}" style="width:0%;background:${c.color};">
+          ${barPct > 8 ? fmtK(c.value) : ''}
+        </div>
+      </div>
+      <div class="wf-cumul" style="color:${c.color};">${fmtK(cum)}</div>
+      <div class="wf-source">
+        <span class="source-badge ${c.source === 'sap' ? 'src-sap' : 'src-hubspot'}">${c.source.toUpperCase()}</span>
+      </div>
+    `;
+    container.appendChild(row);
+  });
+
+  const total = cum;
+  const gap = Math.max(0, BUDGET_RICAVI - total);
+  const coverage = (total / BUDGET_RICAVI * 100).toFixed(1);
+  document.getElementById('gap-val').textContent = fmtK(gap);
+  document.getElementById('coverage-val').style.color = coverage >= 80 ? 'var(--green)' : coverage >= 60 ? 'var(--yellow)' : 'var(--orange)';
+  document.getElementById('coverage-val').textContent = coverage + '%';
+  document.getElementById('gap-mini').textContent = fmtK(gap);
+  document.getElementById('big-ring-val').textContent = fmtK(total);
+
+  // Animate big ring
+  const bigPct = parseFloat(coverage);
+  const circ2 = 502.65;
+  const offset2 = circ2 - (bigPct / 100) * circ2;
+  setTimeout(() => {
+    document.getElementById('budget-ring-fill').style.strokeDashoffset = offset2;
+    document.getElementById('budget-ring-gap').style.strokeDashoffset = offset2;
+    let cur = 0;
+    const step = () => {
+      cur = Math.min(cur + bigPct/50, bigPct);
+      document.getElementById('big-ring-pct').textContent = Math.round(cur) + '%';
+      if (cur < bigPct) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, 600);
+
+  // Animate bars
+  setTimeout(() => {
+    document.querySelectorAll('.wf-bar-fill').forEach(el => {
+      el.style.transition = 'width 1s cubic-bezier(0.4,0,0.2,1)';
+      el.style.width = el.dataset.target + '%';
+    });
+  }, 300);
+}
+
+// ─── DELIVERY TABLE ──────────────────────────────────────────────────────────
+const famColors = {
+  'Cloud':    { bg:'rgba(0,200,255,0.1)', color:'var(--cyan)' },
+  'On Prem':  { bg:'rgba(26,111,212,0.1)', color:'#4a9fd4' },
+  'TIM AICA': { bg:'rgba(255,215,64,0.1)', color:'var(--yellow)' },
+  'N.D.':     { bg:'rgba(255,255,255,0.05)', color:'var(--text3)' },
+};
+const agentColors = {
+  'A. Benassi': 'var(--orange)',
+  'F. Di Russo': 'var(--cyan)',
+  'M. Ferrarini': 'var(--green)',
+  'M. Lambruschi': '#9b7ef8',
+};
+
+let currentFilter = 'all';
+
+function buildDeliveryTable(filter) {
+  currentFilter = filter;
+  const alerts = CONTRATTI_DELIVERY.filter(d => daysFrom(d.data_ordine) > 90 && d.avanzamento < 80);
+  const ok = CONTRATTI_DELIVERY.filter(d => !(daysFrom(d.data_ordine) > 90 && d.avanzamento < 80));
+
+  document.getElementById('alert-count-badge').textContent = `⚠ ${alerts.length} commesse in alert (>90gg, avanz. <80%)`;
+  document.getElementById('tab-alerts-btn').textContent = `⚠ In alert (${alerts.length})`;
+  document.getElementById('tab-ok-btn').textContent = `✓ On track (${ok.length})`;
+
+  let rows = CONTRATTI_DELIVERY;
+  if (filter === 'alerts') rows = alerts;
+  if (filter === 'ok') rows = ok;
+  rows = [...rows].sort((a,b) => b.importo - a.importo);
+
+  const tbody = document.getElementById('delivery-tbody');
+  tbody.innerHTML = '';
+  rows.forEach(r => {
+    const isAlert = daysFrom(r.data_ordine) > 90 && r.avanzamento < 80;
+    const days = daysFrom(r.data_ordine);
+    const fam = famColors[r.famiglia] || famColors['N.D.'];
+    const agColor = agentColors[r.agente] || 'var(--text2)';
+
+    const ageColor = days > 120 ? 'var(--red)' : days > 90 ? 'var(--yellow)' : 'var(--green)';
+    const ageBg = days > 120 ? 'rgba(255,61,113,0.1)' : days > 90 ? 'rgba(255,215,64,0.1)' : 'rgba(0,230,118,0.08)';
+    const advColor = r.avanzamento >= 80 ? 'var(--green)' : r.avanzamento >= 50 ? 'var(--yellow)' : 'var(--red)';
+
+    const tr = document.createElement('tr');
+    if (isAlert) tr.className = 'alert-row';
+    tr.innerHTML = `
+      <td><span class="${isAlert ? 'alert-indicator' : 'ok-indicator'}">${isAlert ? '⚠' : '✓'}</span></td>
+      <td><strong>${r.cliente}</strong></td>
+      <td style="color:${agColor};font-weight:600;font-size:11px;">${r.agente}</td>
+      <td style="text-align:right;font-family:var(--mono);font-size:12px;font-weight:700;">${fmt(r.importo)}</td>
+      <td style="text-align:right;font-family:var(--mono);font-size:11px;color:var(--green);">${r.arr > 0 ? fmt(r.arr) : '<span style="color:var(--text3);">—</span>'}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:80px;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;">
+            <div style="width:${r.avanzamento}%;height:100%;background:${advColor};border-radius:3px;"></div>
+          </div>
+          <span style="font-family:var(--mono);font-size:11px;font-weight:700;color:${advColor};">${r.avanzamento}%</span>
+        </div>
+      </td>
+      <td style="text-align:right;">
+        <span class="age-pill" style="background:${ageBg};color:${ageColor};">${days}gg</span>
+      </td>
+      <td>
+        <span class="fam-tag" style="background:${fam.bg};color:${fam.color};">${r.famiglia}</span>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ─── TAB SWITCH ───────────────────────────────────────────────────────────────
+function switchTab(filter) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  buildDeliveryTable(filter);
+}
+
+// ─── TIM-AICA ROWS ────────────────────────────────────────────────────────────
+function buildTimRows() {
+  const max = Math.max(...TIM_PROB.map(t => t.importo));
+  const container = document.getElementById('tim-rows');
+  TIM_PROB.forEach(t => {
+    const pct = (t.importo / max) * 100;
+    const color = t.prob >= 1 ? 'var(--green)' : t.prob >= 0.8 ? 'var(--cyan)' : t.prob >= 0.5 ? '#4a9fd4' : 'rgba(255,255,255,0.2)';
+    const row = document.createElement('div');
+    row.className = 'tim-prob-row';
+    row.innerHTML = `
+      <div class="tim-prob-label" style="color:${color};">${t.label}</div>
+      <div class="tim-prob-bar-wrap">
+        <div class="tim-prob-bar-bg"></div>
+        <div class="tim-prob-bar-fill" data-target="${pct}" style="width:0%;background:${color};opacity:0.7;">
+          ${pct > 15 ? fmtK(t.importo) : ''}
+        </div>
+      </div>
+      <div class="tim-prob-n">${t.n}</div>
+      <div class="tim-prob-val" style="color:${color};">${fmtK(t.importo)}</div>
+    `;
+    container.appendChild(row);
+  });
+  setTimeout(() => {
+    document.querySelectorAll('.tim-prob-bar-fill').forEach(el => {
+      el.style.transition = 'width 1s cubic-bezier(0.4,0,0.2,1)';
+      el.style.width = el.dataset.target + '%';
+    });
+  }, 500);
+}
+
+// ─── CHARTS ───────────────────────────────────────────────────────────────────
+const chartDefaults = {
+  plugins: { legend: { labels: { color: '#8a9ab8', font: { family: 'Inter', size: 11 } } } },
+  scales: {
+    x: { ticks: { color: '#4a5a78', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+    y: { ticks: { color: '#4a5a78', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } }
+  }
+};
+
+function buildCharts() {
+  // ── RADAR ──
+  new Chart(document.getElementById('radarChart'), {
+    type: 'radar',
+    data: {
+      labels: ['Deals >60%','Volume pipeline','ARR pipeline','Ordini ≥80%'],
+      datasets: [
+        { label:'A. Benassi',   data:[100,100,100,100], borderColor:'#FF6B2B', backgroundColor:'rgba(255,107,43,0.12)', pointBackgroundColor:'#FF6B2B', borderWidth:2 },
+        { label:'F. Di Russo',  data:[67,29,34,76],     borderColor:'#00C8FF', backgroundColor:'rgba(0,200,255,0.08)',   pointBackgroundColor:'#00C8FF', borderWidth:2 },
+        { label:'M. Ferrarini', data:[100,45,57,78],    borderColor:'#00E676', backgroundColor:'rgba(0,230,118,0.08)',   pointBackgroundColor:'#00E676', borderWidth:2 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color:'#8a9ab8', font:{ size:11 } } } },
+      scales: {
+        r: {
+          angleLines: { color:'rgba(255,255,255,0.06)' },
+          grid: { color:'rgba(255,255,255,0.06)' },
+          pointLabels: { color:'#8a9ab8', font:{ size:10 } },
+          ticks: { display:false },
+          suggestedMin:0, suggestedMax:100
+        }
+      }
+    }
+  });
+
+  // ── AGENT BAR ──
+  new Chart(document.getElementById('agentBarChart'), {
+    type: 'bar',
+    data: {
+      labels: ['A. Benassi','F. Di Russo','M. Ferrarini'],
+      datasets: [
+        { label:'Volume pipeline', data:[974134,279613,440206], backgroundColor:'rgba(255,255,255,0.07)', borderColor:'rgba(255,255,255,0.12)', borderWidth:1, borderRadius:4 },
+        { label:'Ordini ≥80%',     data:[272144,207200,212054], backgroundColor:['rgba(255,107,43,0.7)','rgba(0,200,255,0.7)','rgba(0,230,118,0.7)'], borderRadius:4 },
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins: { legend:{ labels:{ color:'#8a9ab8', font:{ size:11 } } } },
+      scales: {
+        x:{ ticks:{ color:'#4a5a78', font:{size:10} }, grid:{ color:'rgba(255,255,255,0.04)' } },
+        y:{ ticks:{ color:'#4a5a78', font:{size:10}, callback: v => '€'+Math.round(v/1000)+'k' }, grid:{ color:'rgba(255,255,255,0.04)' } }
+      }
+    }
+  });
+
+  // ── TIM PIE ──
+  new Chart(document.getElementById('timChart'), {
+    type: 'doughnut',
+    data: {
+      labels: TIM_PROB.map(t => t.label),
+      datasets: [{
+        data: TIM_PROB.map(t => t.importo),
+        backgroundColor: [
+          'rgba(255,255,255,0.1)','rgba(74,159,212,0.4)','rgba(74,159,212,0.6)',
+          'rgba(0,200,255,0.5)','rgba(0,200,255,0.7)','rgba(0,230,118,0.5)',
+          'rgba(0,230,118,0.7)','rgba(0,230,118,0.9)'
+        ],
+        borderColor: 'rgba(255,255,255,0.05)',
+        borderWidth: 1,
+      }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins: {
+        legend:{ position:'right', labels:{ color:'#8a9ab8', font:{size:10}, padding:8 } },
+        tooltip:{ callbacks:{ label: ctx => ` ${ctx.label}: €${Math.round(ctx.raw/1000)}k (${ctx.parsed.toFixed(0)})` } }
+      },
+      cutout: '60%',
+    }
+  });
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Rings
+  animateRing('ring1', 38.5, 'ring1-pct');
+  animateRing('ring2', 64.8, 'ring2-pct');
+  animateRing('ring3', 46.2, 'ring3-pct');
+
+  buildWaterfall();
+  buildDeliveryTable('all');
+  buildTimRows();
+  buildCharts();
+});
+</script>
+</body>
+</html>
