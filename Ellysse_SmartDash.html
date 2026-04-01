@@ -264,8 +264,8 @@ header{
     </div>
     <!-- Insights banner -->
     <div class="insights-banner" id="insightsBanner" style="display:none;"></div>
-    <!-- KPI strip -->
-    <div class="kpi-strip" id="kpiStrip"></div>
+    <!-- KPI strip (nascosta) -->
+    <div class="kpi-strip" id="kpiStrip" style="display:none;"></div>
     <!-- Charts grid -->
     <div class="charts-grid" id="chartsGrid"></div>
     <!-- Data table -->
@@ -441,7 +441,6 @@ function analyzeColumns() {
 function buildDashboard() {
   S.charts.forEach(c=>c.destroy());
   S.charts=[];
-  buildKPIs();
   buildCharts();
   buildTable(S.filteredData||S.data);
   buildInsights();
