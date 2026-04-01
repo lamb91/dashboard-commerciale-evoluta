@@ -327,8 +327,10 @@ header{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 18px;hei
       <!-- Insight banner -->
       <div class="insight-banner" id="insightBanner" style="display:none;"></div>
 
-      <!-- KPI strip -->
+      <!-- KPI strip: contatori -->
       <div class="kpi-strip" id="kpiStrip"></div>
+      <!-- KPI strip 2: valori € -->
+      <div class="kpi-strip" id="kpiStrip2" style="margin-top:-4px;margin-bottom:9px;"></div>
 
       <!-- HERO: Tracciamento deal periodo per periodo -->
       <div class="cc" style="margin-bottom:11px;">
@@ -352,38 +354,11 @@ header{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 18px;hei
         </div>
       </div>
 
-      <!-- Row 2: pipeline + bucket + famiglia -->
-      <div class="cg cg-3" style="margin-bottom:11px;">
-        <div class="cc">
-          <div class="cc-title">💰 Valore pipeline totale</div>
-          <div class="chart-box" style="height:180px;"><canvas id="pipelineChart"></canvas></div>
-        </div>
-        <div class="cc">
-          <div class="cc-title">🎯 Fasce probabilità per periodo</div>
-          <div class="chart-box" style="height:180px;"><canvas id="bucketChart"></canvas></div>
-        </div>
-        <div class="cc">
-          <div class="cc-title">🏷️ Distribuzione per famiglia offerta</div>
-          <div class="chart-box" style="height:180px;"><canvas id="famChart"></canvas></div>
-        </div>
+      <!-- Grafico linee: importo per fascia probabilità per periodo -->
+      <div class="cc" style="margin-bottom:11px;">
+        <div class="cc-title">📈 Totale importo deal per periodo — fasce di probabilità</div>
+        <div class="chart-box" style="height:260px;"><canvas id="probLineChart"></canvas></div>
       </div>
-
-      <!-- Row 3: top deals + status + ARR -->
-      <div class="cg cg-3" style="margin-bottom:11px;">
-        <div class="cc">
-          <div class="cc-title">🏆 Top deal per importo (ultimo periodo)</div>
-          <div class="chart-box" style="height:180px;"><canvas id="topChart"></canvas></div>
-        </div>
-        <div class="cc">
-          <div class="cc-title">📊 Stato deal: conteggio</div>
-          <div class="chart-box" style="height:180px;"><canvas id="statusChart"></canvas></div>
-        </div>
-        <div class="cc">
-          <div class="cc-title">💼 ARR (ricavo anno corrente) per agente</div>
-          <div class="chart-box" style="height:180px;"><canvas id="arrChart"></canvas></div>
-        </div>
-      </div>
-
 
     </div>
   </div>
@@ -425,7 +400,7 @@ const FAM_COLORS = {
 const S = {
   apiKey:'', periods:[], mapping:{id:null,deal:null,company:null,prob:null,value:null,arr:null,agent:null,famiglia:null},
   tracked:[], messages:[], isLoading:false, chatOpen:false,
-  allDelta:[], charts:{slope:null,pipeline:null,bucket:null,fam:null,top:null,status:null,arr:null}
+  allDelta:[], charts:{slope:null,pipeline:null,bucket:null,fam:null,top:null,status:null,arr:null,probLine:null}
 };
 
 // ─── ELLYSSE AUTO-DETECT ──────────────────────────────────────────────────────
@@ -709,13 +684,8 @@ function buildComparison(){
   matchDeals();
   buildInsightBanner();
   buildKPIs();
-  buildPipelineChart();
-  buildBucketChart();
-  buildFamChart();
-  buildTopChart();
-  buildStatusChart();
-  buildArrChart();
   buildDeltaTable();
+  buildProbLineChart();
   buildQuickChipsAI();
 }
 
@@ -754,39 +724,36 @@ function buildInsightBanner(){
 // ─── KPIs ─────────────────────────────────────────────────────────────────────
 function buildKPIs(){
   const strip=document.getElementById('kpiStrip');
-  strip.innerHTML='';
-  const lastIdx=S.periods.length-1;
-  const prevIdx=lastIdx-1;
-  const calc=(idx)=>{
-    const deals=S.tracked.filter(d=>d.pdata[idx]?.prob!=null);
-    return {
-      count:deals.length,
-      val:deals.reduce((a,d)=>a+(d.pdata[idx]?.value||0),0),
-      arr:deals.reduce((a,d)=>a+(d.pdata[idx]?.arr||0),0),
-      avgProb:deals.length?deals.reduce((a,d)=>a+(d.pdata[idx]?.prob||0),0)/deals.length:0,
-    };
-  };
-  const last=calc(lastIdx);
-  const prev=lastIdx>0?calc(prevIdx):null;
-  const addKPI=(lbl,val,delta,color,fmt)=>{
+  const strip2=document.getElementById('kpiStrip2');
+  strip.innerHTML=''; strip2.innerHTML='';
+
+  const up   = S.tracked.filter(d=>d.status==='up');
+  const down = S.tracked.filter(d=>d.status==='down');
+  const nw   = S.tracked.filter(d=>d.status==='new');
+  const lost = S.tracked.filter(d=>d.status==='lost');
+  const sumVal = arr => arr.reduce((a,d)=>a+(d.value||0),0);
+
+  // Riga 1: contatori
+  const addCount=(lbl,val,color)=>{
     const d=document.createElement('div');d.className='kpi';d.style.setProperty('--kc',color);
-    let dH='';
-    if(delta!=null&&Math.abs(delta)>0.001){
-      const up=delta>0;const col=up?'var(--green)':'var(--red)';
-      const fv=typeof delta==='number'&&Math.abs(delta)>100?fmtM(delta):typeof delta==='number'&&Math.abs(delta)<=1&&Math.abs(delta)>0?(delta*100).toFixed(1)+'pp':Math.round(delta);
-      dH=`<div class="kpi-delta" style="color:${col};">${up?'▲':'▼'} ${up?'+':''}${fv} vs prev.</div>`;
-    }
-    d.innerHTML=`<div class="kpi-lbl">${lbl}</div><div class="kpi-val">${fmt(val)}</div>${dH}`;
+    d.innerHTML=`<div class="kpi-lbl">${lbl}</div><div class="kpi-val">${val} deal</div>`;
     strip.appendChild(d);
   };
-  addKPI('Deal attivi (ultimo)',last.count,prev?last.count-prev.count:null,'var(--purple)',v=>v);
-  addKPI('Pipeline totale',last.val,prev?last.val-prev.val:null,'var(--cyan)',fmtM);
-  addKPI('ARR anno corrente',last.arr,prev?last.arr-prev.arr:null,'var(--green)',fmtM);
-  addKPI('Prob. media',last.avgProb,prev?last.avgProb-prev.avgProb:null,'var(--orange)',v=>(v*100).toFixed(1)+'%');
-  addKPI('Deal ↑ prob.',S.tracked.filter(d=>d.status==='up').length,null,'var(--green)',v=>v+' deal');
-  addKPI('Deal ↓ prob.',S.tracked.filter(d=>d.status==='down').length,null,'var(--red)',v=>v+' deal');
-  addKPI('Nuovi deal',S.tracked.filter(d=>d.status==='new').length,null,'var(--cyan)',v=>v+' deal');
-  addKPI('Deal usciti',S.tracked.filter(d=>d.status==='lost').length,null,'var(--text3)',v=>v+' deal');
+  addCount('Deal ↑ prob.',up.length,'var(--green)');
+  addCount('Deal ↓ prob.',down.length,'var(--red)');
+  addCount('Nuovi deal',nw.length,'var(--cyan)');
+  addCount('Deal usciti',lost.length,'var(--text3)');
+
+  // Riga 2: somma importo (€)
+  const addVal=(lbl,val,color)=>{
+    const d=document.createElement('div');d.className='kpi';d.style.setProperty('--kc',color);
+    d.innerHTML=`<div class="kpi-lbl">${lbl}</div><div class="kpi-val">${fmtM(val)}</div><div class="kpi-delta" style="color:var(--text3);">somma offerte</div>`;
+    strip2.appendChild(d);
+  };
+  addVal('Deal ↑ prob.',sumVal(up),'var(--green)');
+  addVal('Deal ↓ prob.',sumVal(down),'var(--red)');
+  addVal('Nuovi deal',sumVal(nw),'var(--cyan)');
+  addVal('Deal usciti',sumVal(lost),'var(--text3)');
 }
 
 // ─── PIPELINE CHART ───────────────────────────────────────────────────────────
@@ -879,6 +846,71 @@ function buildArrChart(){
   });
   const ctx=document.getElementById('arrChart').getContext('2d');
   S.charts.arr=new Chart(ctx,{type:'bar',data:{labels:agents.map(a=>a.split(' ').pop()),datasets:ds},options:darkBar({stacked:false,legend:true})});
+}
+
+// ─── PROB LINE CHART ─────────────────────────────────────────────────────────
+function buildProbLineChart(){
+  if(S.charts.probLine) S.charts.probLine.destroy();
+  if(S.periods.length<2){S.charts.probLine=null;return;}
+  const LEVELS=[
+    {label:'100%',min:0.975,max:1.01, color:'#00C8FF'},
+    {label:'95%', min:0.925,max:0.975,color:'#4a9fd4'},
+    {label:'90%', min:0.85, max:0.925,color:'#00E676'},
+    {label:'80%', min:0.75, max:0.85, color:'#FF6B2B'},
+    {label:'70%', min:0.65, max:0.75, color:'#FFD740'},
+    {label:'60%', min:0.55, max:0.65, color:'#9b7ef8'},
+    {label:'50%', min:0.45, max:0.55, color:'#f472b6'},
+  ];
+  const periodLabels=S.periods.map(p=>p.label);
+  const datasets=LEVELS.map(lv=>{
+    const data=S.periods.map((_,pi)=>
+      S.tracked.reduce((sum,d)=>{
+        const prob=d.pdata[pi]?.prob;
+        if(prob==null) return sum;
+        return (prob>=lv.min&&prob<lv.max)?sum+(d.pdata[pi]?.value||0):sum;
+      },0)
+    );
+    if(!data.some(v=>v>0)) return null;
+    return{
+      label:lv.label+' Deal Total',
+      data,
+      borderColor:lv.color,
+      backgroundColor:lv.color+'22',
+      borderWidth:2,
+      pointRadius:4,
+      pointBackgroundColor:lv.color,
+      pointBorderColor:'rgba(0,0,0,0)',
+      tension:0.3,
+      fill:false,
+    };
+  }).filter(Boolean);
+
+  const ctx=document.getElementById('probLineChart').getContext('2d');
+  S.charts.probLine=new Chart(ctx,{
+    type:'line',
+    data:{labels:periodLabels,datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,animation:{duration:400},
+      plugins:{
+        legend:{
+          display:true,position:'right',
+          labels:{color:'#8a9ab8',font:{size:10,family:'Inter'},padding:8,boxWidth:12}
+        },
+        tooltip:{
+          backgroundColor:'rgba(11,17,32,.96)',
+          borderColor:'rgba(255,255,255,.1)',borderWidth:1,
+          callbacks:{label:c=>` ${c.dataset.label}: ${fmtM(c.raw)}`}
+        }
+      },
+      scales:{
+        x:{ticks:{color:'#4a5a78',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}},
+        y:{
+          ticks:{color:'#4a5a78',font:{size:10},callback:v=>fmtM(v)},
+          grid:{color:'rgba(255,255,255,0.04)'}
+        }
+      }
+    }
+  });
 }
 
 // ─── DELTA TABLE ──────────────────────────────────────────────────────────────
