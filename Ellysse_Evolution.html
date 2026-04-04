@@ -907,7 +907,7 @@ function buildProbLineChart(){
         y:{
           beginAtZero:true,
           min:0,
-          ticks:{color:'#4a5a78',font:{size:10},callback:v=>fmtM(v),stepSize:50000},
+          ticks:{color:'#4a5a78',font:{size:10},callback:v=>fmtM(v),stepSize:50000,maxTicksLimit:30},
           grid:{color:'rgba(255,255,255,0.04)'}
         }
       }
