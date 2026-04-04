@@ -253,6 +253,147 @@ header{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 18px;hei
 .toast.w{background:rgba(255,215,64,.1);border-color:rgba(255,215,64,.25);color:var(--yellow);}
 @keyframes si{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
 
+/* ── HEADER REDESIGN ──────────────────────────────────────────────────────── */
+header{height:56px;padding:0 18px;gap:0;background:#093866;}
+.logo{background:linear-gradient(135deg,#F7941E,#c96900);box-shadow:0 0 14px rgba(247,148,30,.35);}
+.brand{font-size:14px;font-weight:800;color:#FDFDFD;}
+.brand-sub{font-size:8px;color:rgba(255,255,255,.4);letter-spacing:.1em;}
+.hsep{background:rgba(255,255,255,.15);margin:0 16px;}
+.h-kpis{display:flex;align-items:stretch;gap:0;}
+.h-kpi{display:flex;flex-direction:column;justify-content:center;padding:0 16px;border-right:1px solid rgba(255,255,255,.1);cursor:default;}
+.h-kpi-top{display:flex;align-items:center;gap:5px;margin-bottom:2px;}
+.h-kpi-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.h-kpi-label{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.45);font-weight:700;}
+.h-kpi-val{font-family:var(--mono);font-size:13px;font-weight:800;color:#FDFDFD;letter-spacing:-.02em;}
+.chip{border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.6);background:rgba(255,255,255,.06);}
+.chip.ok{border-color:rgba(0,230,118,.4);color:#00E676;background:rgba(0,230,118,.08);}
+.chip.warn{border-color:rgba(255,215,64,.3);color:#FFD740;background:rgba(255,215,64,.06);}
+.model-pill{background:rgba(247,148,30,.15);border:1px solid rgba(247,148,30,.35);color:#F7941E;}
+.hbtn{border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.75);background:rgba(255,255,255,.07);}
+.hbtn:hover{border-color:rgba(255,255,255,.4);color:#FDFDFD;}
+
+/* ── SIDEBAR REDESIGN ─────────────────────────────────────────────────────── */
+.sidebar{width:272px;background:#093866;border-right:1px solid rgba(255,255,255,.1);overflow-y:auto;display:flex;flex-direction:column;}
+.sb-brand{padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.sb-brand-icon{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#F7941E,#c96900);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#fff;flex-shrink:0;box-shadow:0 0 12px rgba(247,148,30,.3);}
+.sb-brand-name{font-size:13px;font-weight:800;color:#FDFDFD;letter-spacing:-.01em;}
+.sb-brand-sub{font-size:8px;color:rgba(255,255,255,.35);letter-spacing:.12em;text-transform:uppercase;margin-top:1px;}
+.sb-sec{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.1);}
+.sb-title{font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.38);font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.sb-title-ico{font-size:10px;opacity:.7;}
+/* Period file zones */
+.period-zone{border:1px dashed rgba(255,255,255,.18);border-radius:8px;padding:9px 11px;margin-bottom:5px;cursor:pointer;transition:all .2s;position:relative;}
+.period-zone.active{border-color:#F7941E;background:rgba(247,148,30,.07);}
+.period-zone:hover{border-color:rgba(255,255,255,.35);}
+.period-zone-header{display:flex;align-items:center;gap:7px;margin-bottom:3px;}
+.period-badge{font-size:8px;font-weight:800;font-family:var(--mono);color:rgba(255,255,255,.5);background:rgba(255,255,255,.08);padding:1px 6px;border-radius:3px;letter-spacing:.04em;}
+.period-badge.active{background:rgba(247,148,30,.2);color:#F7941E;}
+.period-zone-name{font-size:10px;font-weight:700;color:#FDFDFD;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;}
+.period-zone-file{font-size:9px;color:rgba(247,148,30,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.period-zone-empty{font-size:10px;color:rgba(255,255,255,.3);font-style:italic;}
+.period-zone-del{position:absolute;top:6px;right:7px;width:14px;height:14px;border-radius:3px;border:none;background:rgba(255,61,113,.15);color:rgba(255,100,100,.8);cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;}
+.period-zone:hover .period-zone-del{opacity:1;}
+/* Column mapping */
+.cm-row{display:flex;align-items:center;gap:5px;margin-bottom:4px;}
+.cm-lbl{font-size:8px;color:rgba(255,255,255,.5);width:52px;flex-shrink:0;}
+.cm-sel{flex:1;padding:3px 5px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:5px;color:#FDFDFD;font-size:9px;outline:none;cursor:pointer;}
+.cm-sel option{background:#093866;color:#FDFDFD;}
+/* API input */
+.api-inp{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#FDFDFD;}
+.api-inp:focus{border-color:rgba(247,148,30,.6);}
+.api-inp::placeholder{color:rgba(255,255,255,.3);}
+.api-hint{color:rgba(255,255,255,.35);}
+.api-hint a{color:#F7941E;}
+/* Apply btn */
+.apply-btn{background:linear-gradient(135deg,#F7941E,#c96900);border-radius:8px;color:#fff;font-size:11px;font-weight:700;border:none;width:100%;padding:8px;cursor:pointer;margin-top:5px;transition:all .15s;}
+.apply-btn:hover{box-shadow:0 0 12px rgba(247,148,30,.4);transform:translateY(-1px);}
+/* Legend items */
+.sb-legend-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;}
+.sb-legend-dot{width:8px;height:8px;border-radius:50%;}
+.sb-legend-label{font-size:10px;font-weight:600;color:rgba(255,255,255,.7);flex:1;margin-left:8px;}
+.sb-legend-range{font-size:9px;color:rgba(255,255,255,.35);font-family:var(--mono);}
+/* CTA at bottom */
+.sb-cta{padding:12px 14px;flex-shrink:0;border-top:1px solid rgba(255,255,255,.1);margin-top:auto;}
+.sb-cta-btn{width:100%;padding:11px;border-radius:9px;border:none;background:linear-gradient(135deg,#F7941E,#c96900);color:#fff;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.02em;transition:all .15s;box-shadow:0 2px 16px rgba(247,148,30,.25);}
+.sb-cta-btn:hover{box-shadow:0 4px 24px rgba(247,148,30,.45);transform:translateY(-1px);}
+/* DZ override for sidebar */
+.dz{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.04);}
+.dz:hover,.dz.drag{border-color:rgba(247,148,30,.6);background:rgba(247,148,30,.05);}
+.dz-txt{color:rgba(255,255,255,.6);}
+.dz-sub{color:rgba(255,255,255,.3);}
+.fmt{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:rgba(255,255,255,.4);}
+
+/* ── INSIGHT BANNER REDESIGN ──────────────────────────────────────────────── */
+.insight-banner{background:#FDFDFD;border:1px solid rgba(9,56,102,.12);border-left:3px solid #F7941E;border-radius:0 10px 10px 0;padding:12px 16px;font-size:12px;color:#3a6490;line-height:1.65;margin-bottom:12px;}
+.insight-banner strong{color:#093866;}
+.ins-pill{border-radius:20px;font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px 10px;border:1px solid;}
+
+/* ── PIPELINE INTENSITY MATRIX ────────────────────────────────────────────── */
+.him-wrap{overflow-x:auto;border-radius:10px;border:1px solid rgba(9,56,102,.1);}
+.him-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.him-title{font-size:11px;font-weight:800;letter-spacing:.1em;color:#093866;text-transform:uppercase;}
+.him-subtitle{font-size:9px;color:#6a90b0;letter-spacing:.06em;text-transform:uppercase;font-family:var(--mono);}
+.him-table{width:100%;border-collapse:collapse;min-width:480px;}
+.him-th{padding:10px 16px;text-align:center;font-size:9px;text-transform:uppercase;letter-spacing:.1em;font-weight:800;color:#FDFDFD;background:#093866;white-space:nowrap;}
+.him-th:first-child{text-align:left;border-radius:0;}
+.him-th .him-delta-tag{font-size:8px;background:rgba(247,148,30,.3);color:#F7941E;padding:1px 5px;border-radius:3px;margin-left:5px;font-family:var(--mono);}
+.him-td{padding:12px 16px;text-align:center;border:1px solid rgba(9,56,102,.07);vertical-align:middle;}
+.him-td:first-child{text-align:left;border-left:none;}
+.him-val{font-family:var(--mono);font-size:15px;font-weight:800;color:#093866;line-height:1;}
+.him-deals{font-size:8px;color:#6a90b0;margin-top:3px;text-transform:uppercase;letter-spacing:.07em;font-weight:600;}
+.him-delta{font-size:10px;font-weight:700;margin-top:3px;font-family:var(--mono);}
+.him-label-cell{display:flex;align-items:center;gap:9px;}
+.him-prob-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.him-prob-text{font-size:13px;font-weight:800;color:#093866;}
+.him-total-row .him-td{background:#093866;border-color:#093866;}
+.him-total-row .him-val{color:#FDFDFD;font-size:14px;}
+.him-total-row .him-deals{color:rgba(255,255,255,.4);}
+.him-total-row .him-prob-text{color:#FDFDFD;font-size:11px;letter-spacing:.08em;text-transform:uppercase;}
+tr:hover .him-td{background:rgba(9,56,102,.025);}
+.him-total-row:hover .him-td{background:#093866;}
+
+/* ── CHAT BAR REDESIGN ────────────────────────────────────────────────────── */
+.chat-bar{background:#093866;border-top:1px solid rgba(255,255,255,.1);}
+.chat-input-row{background:#093866;}
+.qchips{background:#093866;padding:5px 14px 3px;}
+.qchip{border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.55);background:rgba(255,255,255,.05);font-size:9px;}
+.qchip:hover{border-color:rgba(247,148,30,.5);color:#F7941E;background:rgba(247,148,30,.07);}
+.c-inp{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.14);color:#FDFDFD;}
+.c-inp:focus{border-color:rgba(247,148,30,.6);}
+.c-inp::placeholder{color:rgba(255,255,255,.3);}
+.sbtn{background:linear-gradient(135deg,#F7941E,#c96900);}
+.ctoggle{border-color:rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);}
+.ctoggle:hover{color:#FDFDFD;}
+.c-hint{color:rgba(255,255,255,.35);}
+.chat-hist{background:#093866;}
+.cmsg.ai .cbubble{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:#FDFDFD;}
+.cmsg.user .cbubble{background:rgba(247,148,30,.12);border:1px solid rgba(247,148,30,.25);color:#FDFDFD;}
+.ai-ico{background:linear-gradient(135deg,#F7941E,#c96900);}
+.cmsg.user .cavatar{background:linear-gradient(135deg,#F7941E,#c96900);}
+.cmsg.ai .cavatar{background:rgba(255,255,255,.12);}
+.cbubble strong{color:#FDFDFD;}
+
+/* ── MAIN CONTENT AREA ────────────────────────────────────────────────────── */
+.dash-scroll{background:#FDFDFD;padding:16px 20px 12px;}
+.cc{background:#FDFDFD;border:1px solid rgba(9,56,102,.1);border-radius:11px;}
+.cc-title{color:#6a90b0;font-size:9px;letter-spacing:.1em;}
+.dt th{background:#EEF4FB;color:#6a90b0;border-bottom:1px solid rgba(9,56,102,.1);}
+.dt td{border-bottom:1px solid rgba(9,56,102,.06);color:#093866;}
+.dt tr:hover td{background:rgba(9,56,102,.025);}
+.deal-primary{color:#093866;}
+.deal-company{color:#6a90b0;}
+.f-sel{background:rgba(9,56,102,.04);border-color:rgba(9,56,102,.15);color:#093866;}
+.f-sel option{background:#FDFDFD;color:#093866;}
+.f-inp{background:rgba(9,56,102,.04);border-color:rgba(9,56,102,.15);color:#093866;}
+.f-inp:focus{border-color:rgba(247,148,30,.6);}
+.f-inp::placeholder{color:#6a90b0;}
+
+/* ── EMPTY STATE ──────────────────────────────────────────────────────────── */
+.e-title{color:#093866;}
+.e-sub{color:#3a6490;}
+.e-step{background:rgba(9,56,102,.04);border-color:rgba(9,56,102,.1);color:#3a6490;}
+.e-n{background:rgba(247,148,30,.12);border-color:rgba(247,148,30,.3);color:#F7941E;}
+
 </style>
 </head>
 <body>
@@ -263,12 +404,15 @@ header{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 18px;hei
   <div class="logo">E</div>
   <div><div class="brand">Pipeline Evolution</div><div class="brand-sub">ELLYSSE · MULTI-PERIOD INTELLIGENCE</div></div>
   <div class="hsep"></div>
-  <div class="chip" id="apiChip"><div class="cdot"></div>API: —</div>
+  <!-- KPI inline -->
+  <div class="h-kpis" id="hKpis"></div>
+  <div class="hsep" style="margin:0 12px;"></div>
   <div class="chip" id="periodsChip"><div class="cdot"></div>0 periodi</div>
-  <div class="chip" id="dealsChip" style="display:none;"><div class="cdot pulse" style="background:var(--green);"></div><span id="dealsChipTxt"></span></div>
-  <div class="model-pill">gemini-2.5-flash-lite</div>
+  <div class="chip" id="apiChip" style="margin-left:6px;"><div class="cdot"></div>API: —</div>
+  <div class="model-pill" style="margin-left:8px;">gemini-2.5-flash-lite</div>
   <div class="hright">
     <button class="hbtn" onclick="exportReport()">↓ Export</button>
+    <button class="hbtn" id="dealsChip" style="display:none;border-color:rgba(0,230,118,.3);color:#00E676;background:rgba(0,230,118,.07);"><div class="cdot pulse" style="background:var(--green);display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:4px;"></div><span id="dealsChipTxt"></span></button>
   </div>
 </header>
 
@@ -277,44 +421,53 @@ header{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 18px;hei
   <!-- SIDEBAR -->
   <div class="sidebar">
 
-    <!-- API Key -->
-    <div class="sb-sec">
-      <div class="sb-title">OpenRouter API Key</div>
-      <input type="password" class="api-inp" id="apiInp" placeholder="sk-or-v1-..." autocomplete="off" spellcheck="false" oninput="setApiKey(this.value)"/>
-      <div class="api-hint"><a href="https://openrouter.ai/keys" target="_blank">→ Chiave gratuita</a> · modello: gemini-2.5-flash-lite</div>
-    </div>
-
-    <!-- Upload -->
-    <div class="sb-sec">
-      <div class="sb-title">Periodi (file Excel)</div>
-      <div class="dz" id="dz">
-        <input type="file" id="fileInp" accept=".xlsx,.xls,.csv" multiple onchange="handleFiles(event)"/>
-        <div class="dz-txt">📁 Trascina più file</div>
-        <div class="dz-sub">Un file = un periodo da confrontare</div>
-        <div class="dz-fmt"><span class="fmt">.xlsx</span><span class="fmt">.xls</span><span class="fmt">.csv</span></div>
+    <!-- Brand -->
+    <div class="sb-brand">
+      <div class="sb-brand-icon">E</div>
+      <div>
+        <div class="sb-brand-name">Ellysse Intelligence</div>
+        <div class="sb-brand-sub">Pipeline Analyst</div>
       </div>
     </div>
 
-    <!-- File list -->
-    <div id="fileListSec" style="display:none;">
-      <div style="padding:7px 13px 3px;"><div class="sb-title">Periodi caricati</div></div>
-      <div id="fileList" style="padding:0 10px 8px;"></div>
+    <!-- Upload periodi -->
+    <div class="sb-sec">
+      <div class="sb-title"><span class="sb-title-ico">☁</span> Data Pipeline</div>
+      <div class="dz" id="dz" style="margin-bottom:8px;">
+        <input type="file" id="fileInp" accept=".xlsx,.xls,.csv" multiple onchange="handleFiles(event)"/>
+        <div class="dz-txt" style="font-size:10px;">📁 Trascina file Excel</div>
+        <div class="dz-sub">Un file = un periodo</div>
+        <div class="dz-fmt"><span class="fmt">.xlsx</span><span class="fmt">.xls</span><span class="fmt">.csv</span></div>
+      </div>
+      <div id="fileList"></div>
     </div>
 
     <!-- Column mapping -->
     <div class="sb-sec" id="colMapSec" style="display:none;">
-      <div class="sb-title">Mappa colonne <span id="autoDetectBadge" style="display:none;font-size:8px;color:var(--green);font-weight:700;margin-left:4px;">✓ AUTO-RILEVATO</span></div>
+      <div class="sb-title"><span class="sb-title-ico">⇄</span> Column Mapping <span id="autoDetectBadge" style="display:none;font-size:8px;color:#00E676;font-weight:700;margin-left:4px;">✓ AUTO</span></div>
       <div id="colMap"></div>
-      <button class="apply-btn" onclick="buildComparison()">↺ Aggiorna analisi</button>
+    </div>
+
+    <!-- API Key -->
+    <div class="sb-sec">
+      <div class="sb-title"><span class="sb-title-ico">⚿</span> API Configuration</div>
+      <input type="password" class="api-inp" id="apiInp" placeholder="sk-or-v1-..." autocomplete="off" spellcheck="false" oninput="setApiKey(this.value)"/>
+      <div class="api-hint" style="margin-top:4px;"><a href="https://openrouter.ai/keys" target="_blank">→ Chiave gratuita</a></div>
     </div>
 
     <!-- Legend -->
     <div class="sb-sec" id="legendSec" style="display:none;">
-      <div class="sb-title">Legenda colori</div>
-      <div id="legendItems" style="display:flex;flex-direction:column;gap:4px;"></div>
+      <div class="sb-title"><span class="sb-title-ico">◉</span> Period Legend</div>
+      <div id="legendItems"></div>
     </div>
 
-    <div style="flex:1;"></div>
+    <div style="flex:1;min-height:12px;"></div>
+
+    <!-- CTA -->
+    <div class="sb-cta">
+      <button class="sb-cta-btn" onclick="buildComparison()">↺ New Analysis</button>
+    </div>
+
   </div>
 
   <!-- MAIN -->
@@ -342,15 +495,19 @@ header{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 18px;hei
       <!-- Insight banner -->
       <div class="insight-banner" id="insightBanner" style="display:none;"></div>
 
-      <!-- KPI strip: contatori -->
-      <div class="kpi-strip" id="kpiStrip"></div>
-      <!-- KPI strip 2: valori € -->
-      <div class="kpi-strip" id="kpiStrip2" style="margin-top:-4px;margin-bottom:9px;"></div>
+      <!-- KPI strips (hidden - valori ora in header) -->
+      <div id="kpiStrip" style="display:none;"></div>
+      <div id="kpiStrip2" style="display:none;"></div>
 
-      <!-- Heatmap: importo per fascia probabilità per periodo -->
-      <div class="cc" style="margin-bottom:11px;">
-        <div class="cc-title">🔥 Pipeline per fascia di probabilità — andamento periodi</div>
-        <div id="probHeatmap" style="overflow-x:auto;padding:4px 2px;"></div>
+      <!-- Pipeline Intensity Matrix -->
+      <div style="margin-bottom:13px;">
+        <div class="him-header">
+          <div class="him-title">Pipeline Intensity Matrix</div>
+          <div class="him-subtitle">Values in € (Millions)</div>
+        </div>
+        <div class="him-wrap">
+          <div id="probHeatmap"></div>
+        </div>
       </div>
 
       <!-- HERO: Tracciamento deal periodo per periodo -->
@@ -472,9 +629,8 @@ function loadOneFile(file) {
       }
       renderSidebar();
       buildComparison();
-      document.getElementById('fileListSec').style.display='block';
-      document.getElementById('colMapSec').style.display='block';
-      document.getElementById('legendSec').style.display='block';
+      const cms=document.getElementById('colMapSec'); if(cms) cms.style.display='block';
+      const legs=document.getElementById('legendSec'); if(legs) legs.style.display='block';
       document.getElementById('emptyState').style.display='none';
       document.getElementById('dashArea').style.display='block';
       enableChat();
@@ -518,51 +674,61 @@ function guessLabel(filename) {
 }
 
 function renderSidebar() {
-  // File list
+  // Period zones (styled like mockup: P1, P2, P3...)
   const fl = document.getElementById('fileList');
   fl.innerHTML='';
-  S.periods.forEach(p=>{
-    const item=document.createElement('div');
-    item.className='file-item';
-    item.innerHTML=`
-      <div class="file-color" style="background:${p.color};"></div>
-      <div class="file-info">
-        <div class="file-name" title="${p.file}">${p.file.length>26?p.file.slice(0,26)+'…':p.file}</div>
-        <div class="file-rows">${p.rows.toLocaleString('it-IT')} righe · ${p.headers.length} col</div>
-        <input class="file-lbl" value="${p.label}" placeholder="Etichetta..." onchange="relabel('${p.id}',this.value)"/>
+  const periodLabels = ['P1','P2','P3','P4','P5','P6'];
+  S.periods.forEach((p, idx)=>{
+    const label = periodLabels[idx] || `P${idx+1}`;
+    const isLast = idx === S.periods.length - 1;
+    const zone = document.createElement('div');
+    zone.className = 'period-zone' + (isLast ? ' active' : '');
+    const fname = p.file.length > 22 ? p.file.slice(0,22)+'…' : p.file;
+    zone.innerHTML = `
+      <div class="period-zone-header">
+        <span class="period-badge${isLast?' active':''}">${label}</span>
+        <span class="period-zone-name">${p.label}</span>
       </div>
-      <button class="file-del" onclick="removePeriod('${p.id}')">✕</button>
+      <div class="period-zone-file">File: ${fname}</div>
+      <button class="period-zone-del" onclick="removePeriod('${p.id}')">✕</button>
     `;
-    fl.appendChild(item);
+    fl.appendChild(zone);
   });
 
   // Periods chip
   const pc=document.getElementById('periodsChip');
   pc.className='chip '+(S.periods.length>1?'ok':'warn');
-  pc.innerHTML=`<div class="cdot ${S.periods.length>1?'pulse':''}"></div>${S.periods.length} period${S.periods.length!==1?'i':'o'}`;
+  pc.innerHTML=`<div class="cdot ${S.periods.length>1?'pulse':''}"></div>${S.periods.length} Period${S.periods.length!==1?'s':'o'}`;
 
   // Legend
   const leg=document.getElementById('legendItems');
-  leg.innerHTML=S.periods.map(p=>`<div style="display:flex;align-items:center;gap:6px;"><div style="width:9px;height:9px;border-radius:50%;background:${p.color};flex-shrink:0;"></div><span style="font-size:9px;color:var(--text2);">${p.label}</span></div>`).join('');
+  leg.innerHTML=S.periods.map((p,i)=>`
+    <div class="sb-legend-row">
+      <div class="sb-legend-dot" style="background:${p.color};"></div>
+      <div class="sb-legend-label">${periodLabels[i]||'P'+(i+1)}</div>
+      <div class="sb-legend-range">${p.label}</div>
+    </div>`).join('');
 
   // Column mapping UI
   const allH=[...new Set(S.periods.flatMap(p=>p.headers))];
   const isElys=S.periods.some(p=>isElysseFormat(p.headers));
   document.getElementById('autoDetectBadge').style.display=isElys?'':'none';
+  document.getElementById('colMapSec').style.display=S.periods.length?'':'none';
+  document.getElementById('legendSec').style.display=S.periods.length?'':'none';
   const fields=[
-    {k:'id',lbl:'🔑 ID match',tip:'Trattativa ID (chiave match)'},
-    {k:'deal',lbl:'📝 Deal',tip:'Nome trattativa'},
-    {k:'company',lbl:'🏢 Azienda',tip:'Company Name'},
-    {k:'prob',lbl:'% Prob.',tip:'Probabilità previsione'},
-    {k:'value',lbl:'€ Importo',tip:'Importo / Importo totale'},
-    {k:'arr',lbl:'€ ARR',tip:'Ricavo anno corrente'},
-    {k:'agent',lbl:'👤 Agente',tip:'Proprietario'},
-    {k:'famiglia',lbl:'🏷️ Famiglia',tip:'Famiglia di Offerta'},
+    {k:'id',lbl:'ID'},
+    {k:'deal',lbl:'Deal'},
+    {k:'company',lbl:'Azienda'},
+    {k:'prob',lbl:'% Prob.'},
+    {k:'value',lbl:'€ Importo'},
+    {k:'arr',lbl:'€ ARR'},
+    {k:'agent',lbl:'Agente'},
+    {k:'famiglia',lbl:'Famiglia'},
   ];
   const cm=document.getElementById('colMap');
   cm.innerHTML=fields.map(f=>`
     <div class="cm-row">
-      <span class="cm-lbl" title="${f.tip}">${f.lbl}</span>
+      <span class="cm-lbl">${f.lbl}</span>
       <select class="cm-sel" id="cm_${f.k}" onchange="S.mapping['${f.k}']=this.value||null">
         <option value="">—</option>
         ${allH.map(h=>`<option value="${h}" ${S.mapping[f.k]===h?'selected':''}>${h.length>22?h.slice(0,22)+'…':h}</option>`).join('')}
@@ -721,26 +887,26 @@ function buildInsightBanner(){
   const deltaVal=lastVal-prevVal;
   const topUp=S.tracked.filter(d=>d.status==='up').sort((a,b)=>b.deltaProb-a.deltaProb).slice(0,2);
   const topDown=S.tracked.filter(d=>d.status==='down').sort((a,b)=>a.deltaProb-b.deltaProb).slice(0,2);
+  const pctChange = prevVal>0?((deltaVal/prevVal)*100).toFixed(1):null;
+  const pctStr = pctChange ? `<strong style="color:${deltaVal>=0?'#059669':'#dc3555'};">${deltaVal>=0?'+':''}${pctChange}%</strong> ` : '';
   b.innerHTML=`
-    🔍 <strong>${S.periods[prevIdx].label} → ${S.periods[lastIdx].label}:</strong>
-    pipeline ${deltaVal>=0?'+':''}<strong style="color:${deltaVal>=0?'var(--green)':'var(--red)'};">${fmtM(deltaVal)}</strong> ·
-    <strong style="color:var(--green);">${nUp} deal ↑</strong> ·
-    <strong style="color:var(--red);">${nDown} deal ↓</strong> ·
-    <strong style="color:var(--cyan);">${nNew} nuovi</strong> ·
-    <strong style="color:var(--text3);">${nStable} stabili</strong> ·
-    <strong>${nLost} usciti</strong>
-    <div class="insight-pills" style="margin-top:6px;">
-      ${topUp.map(d=>`<span class="ins-pill" style="background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.2);">↑ ${d.companyName||d.displayName.slice(0,20)} +${Math.round(d.deltaProb*100)}pp</span>`).join('')}
-      ${topDown.map(d=>`<span class="ins-pill" style="background:rgba(255,61,113,.1);color:var(--red);border:1px solid rgba(255,61,113,.2);">↓ ${d.companyName||d.displayName.slice(0,20)} ${Math.round(d.deltaProb*100)}pp</span>`).join('')}
+    Pipeline ${S.periods[prevIdx].label} → <strong>${S.periods[lastIdx].label}</strong>:
+    variazione ${pctStr}<strong style="color:${deltaVal>=0?'#059669':'#dc3555'};">${deltaVal>=0?'+':''}${fmtM(deltaVal)}</strong> —
+    <strong style="color:#059669;">${nUp} ↑</strong> in salita ·
+    <strong style="color:#dc3555;">${nDown} ↓</strong> in calo ·
+    <strong style="color:#0ea5e9;">${nNew}</strong> nuovi ·
+    <strong style="color:#6a90b0;">${nLost}</strong> usciti
+    <div class="insight-pills" style="margin-top:8px;gap:5px;display:flex;flex-wrap:wrap;">
+      ${topUp.map(d=>`<span class="ins-pill" style="color:#059669;border-color:rgba(5,150,105,.3);background:rgba(5,150,105,.06);">↑ ${(d.companyName||d.displayName).slice(0,22)} +${Math.round(d.deltaProb*100)}pp</span>`).join('')}
+      ${topDown.map(d=>`<span class="ins-pill" style="color:#dc3555;border-color:rgba(220,53,85,.3);background:rgba(220,53,85,.05);">↓ ${(d.companyName||d.displayName).slice(0,22)} ${Math.round(d.deltaProb*100)}pp</span>`).join('')}
     </div>
   `;
 }
 
 // ─── KPIs ─────────────────────────────────────────────────────────────────────
 function buildKPIs(){
-  const strip=document.getElementById('kpiStrip');
-  const strip2=document.getElementById('kpiStrip2');
-  strip.innerHTML=''; strip2.innerHTML='';
+  const hKpis = document.getElementById('hKpis');
+  if(!hKpis) return;
 
   const up   = S.tracked.filter(d=>d.status==='up');
   const down = S.tracked.filter(d=>d.status==='down');
@@ -748,27 +914,22 @@ function buildKPIs(){
   const lost = S.tracked.filter(d=>d.status==='lost');
   const sumVal = arr => arr.reduce((a,d)=>a+(d.value||0),0);
 
-  // Riga 1: contatori
-  const addCount=(lbl,val,color)=>{
-    const d=document.createElement('div');d.className='kpi';d.style.setProperty('--kc',color);
-    d.innerHTML=`<div class="kpi-lbl">${lbl}</div><div class="kpi-val">${val} deal</div>`;
-    strip.appendChild(d);
-  };
-  addCount('Deal ↑ prob.',up.length,'var(--green)');
-  addCount('Deal ↓ prob.',down.length,'var(--red)');
-  addCount('Nuovi deal',nw.length,'var(--cyan)');
-  addCount('Deal usciti',lost.length,'var(--text3)');
+  const items = [
+    { label:'↑ PROB',    color:'#00E676', count:up.length,   val:sumVal(up)   },
+    { label:'↓ PROB',    color:'#FF3D71', count:down.length, val:sumVal(down) },
+    { label:'NEW DEALS', color:'#00C8FF', count:nw.length,   val:sumVal(nw)   },
+    { label:'LOST DEALS',color:'#6a90b0', count:lost.length, val:sumVal(lost) },
+  ];
 
-  // Riga 2: somma importo (€)
-  const addVal=(lbl,val,color)=>{
-    const d=document.createElement('div');d.className='kpi';d.style.setProperty('--kc',color);
-    d.innerHTML=`<div class="kpi-lbl">${lbl}</div><div class="kpi-val">${fmtM(val)}</div><div class="kpi-delta" style="color:var(--text3);">somma offerte</div>`;
-    strip2.appendChild(d);
-  };
-  addVal('Deal ↑ prob.',sumVal(up),'var(--green)');
-  addVal('Deal ↓ prob.',sumVal(down),'var(--red)');
-  addVal('Nuovi deal',sumVal(nw),'var(--cyan)');
-  addVal('Deal usciti',sumVal(lost),'var(--text3)');
+  hKpis.innerHTML = items.map(it=>`
+    <div class="h-kpi">
+      <div class="h-kpi-top">
+        <div class="h-kpi-dot" style="background:${it.color};box-shadow:0 0 5px ${it.color}66;"></div>
+        <div class="h-kpi-label">${it.label}</div>
+      </div>
+      <div class="h-kpi-val">${fmtM(it.val)}</div>
+    </div>
+  `).join('');
 }
 
 // ─── PIPELINE CHART ───────────────────────────────────────────────────────────
@@ -868,17 +1029,18 @@ function buildProbLineChart(){ buildProbHeatmap(); }
 function buildProbHeatmap(){
   const el=document.getElementById('probHeatmap');
   if(!el) return;
-  if(S.periods.length<1){el.innerHTML='<p style="color:#6a90b0;padding:12px;font-size:12px;">Carica almeno un periodo.</p>';return;}
+  if(S.periods.length<1){el.innerHTML='<p style="color:#6a90b0;padding:16px;font-size:12px;">Carica almeno un periodo per visualizzare la matrice.</p>';return;}
   const LEVELS=[
     {label:'100%',min:0.975,max:1.01, color:'#00C8FF'},
     {label:'95%', min:0.925,max:0.975,color:'#4a9fd4'},
     {label:'90%', min:0.85, max:0.925,color:'#00E676'},
-    {label:'80%', min:0.75, max:0.85, color:'#FF6B2B'},
+    {label:'80%', min:0.75, max:0.85, color:'#F7941E'},
     {label:'70%', min:0.65, max:0.75, color:'#FFD740'},
     {label:'60%', min:0.55, max:0.65, color:'#9b7ef8'},
     {label:'50%', min:0.45, max:0.55, color:'#f472b6'},
   ];
-  // build matrix[level][period] = {total, count}
+  const lastIdx = S.periods.length - 1;
+
   const matrix=LEVELS.map(lv=>
     S.periods.map((_,pi)=>{
       let total=0,count=0;
@@ -890,66 +1052,78 @@ function buildProbHeatmap(){
       return {total,count};
     })
   );
-  // max value for intensity scaling
-  const maxVal=Math.max(1,...matrix.flat().map(c=>c.total));
 
-  const cols=S.periods.length;
-  const gridCols=`140px repeat(${cols},1fr)`;
+  // Build <table>
+  let html=`<table class="him-table">
+    <thead><tr>
+      <th class="him-th" style="text-align:left;padding-left:16px;min-width:120px;">TIER / PROB</th>
+      ${S.periods.map((p,pi)=>{
+        const isLast=pi===lastIdx&&S.periods.length>1;
+        return `<th class="him-th">${p.label}${isLast?` <span class="him-delta-tag">DELTA</span>`:''}`;
+      }).join('</th>')}
+      </th>
+    </tr></thead>
+    <tbody>`;
 
-  let html=`<div style="display:grid;grid-template-columns:${gridCols};gap:3px;min-width:520px;">`;
-
-  // Header row
-  html+=`<div style="padding:6px 8px;font-size:10px;color:#6a90b0;font-weight:600;letter-spacing:.05em;text-align:right;">FASCIA</div>`;
-  S.periods.forEach(p=>{
-    html+=`<div style="padding:6px 8px;font-size:10px;color:#8a9ab8;font-weight:600;text-align:center;letter-spacing:.04em;">${p.label}</div>`;
-  });
-
-  // Data rows
   LEVELS.forEach((lv,li)=>{
-    // row label
-    html+=`<div style="display:flex;align-items:center;gap:6px;padding:4px 8px;font-size:11px;font-weight:700;color:${lv.color};justify-content:flex-end;">
-      <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${lv.color};flex-shrink:0;"></span>${lv.label}
-    </div>`;
+    html+=`<tr>
+      <td class="him-td" style="border-left:none;">
+        <div class="him-label-cell">
+          <span class="him-prob-dot" style="background:${lv.color};box-shadow:0 0 6px ${lv.color}55;"></span>
+          <span class="him-prob-text">${lv.label}</span>
+        </div>
+      </td>`;
     matrix[li].forEach((cell,pi)=>{
-      const intensity=cell.total>0?Math.max(0.08,cell.total/maxVal):0;
-      const bg=cell.total>0?hexToRgba(lv.color,intensity*0.55):'rgba(255,255,255,0.02)';
-      const border=cell.total>0?`1px solid ${hexToRgba(lv.color,0.35)}`:'1px solid rgba(255,255,255,0.04)';
-      // trend arrow vs previous period
-      let trend='';
-      if(pi>0){
-        const prev=matrix[li][pi-1].total;
-        const curr=cell.total;
-        if(curr>prev) trend=`<span style="color:#00E676;font-size:10px;">▲</span>`;
-        else if(curr<prev&&prev>0) trend=`<span style="color:#FF4560;font-size:10px;">▼</span>`;
-        else if(curr===prev&&curr>0) trend=`<span style="color:#FFD740;font-size:10px;">─</span>`;
+      const isLast=pi===lastIdx&&S.periods.length>1;
+      const prev=pi>0?matrix[li][pi-1]:null;
+      // Delta % for last column
+      let deltaHtml='';
+      if(isLast&&prev&&prev.total>0&&cell.total>0){
+        const pct=((cell.total-prev.total)/prev.total*100);
+        const sign=pct>=0?'+':'';
+        const color=pct>0?'#059669':pct<0?'#dc3555':'#6a90b0';
+        const arrow=pct>0?'▲':pct<0?'▼':'─';
+        deltaHtml=`<div class="him-delta" style="color:${color};">${arrow} ${sign}${pct.toFixed(0)}%</div>`;
       }
-      const valueStr=cell.total>0?fmtM(cell.total):'—';
-      const countStr=cell.count>0?`<div style="font-size:9px;color:#6a90b0;margin-top:1px;">${cell.count} deal</div>`:'';
-      html+=`<div style="background:${bg};border:${border};border-radius:6px;padding:8px 10px;text-align:center;position:relative;">
-        <div style="font-size:12px;font-weight:700;color:${cell.total>0?'#093866':'rgba(9,56,102,.25)'};">${valueStr} ${trend}</div>
-        ${countStr}
-      </div>`;
+      // Cell background tint for last column
+      let cellBg='';
+      if(isLast&&cell.total>0&&prev){
+        if(cell.total>prev.total) cellBg='background:rgba(5,150,105,.06);';
+        else if(cell.total<prev.total) cellBg='background:rgba(220,53,85,.05);';
+      }
+      html+=`<td class="him-td" style="${cellBg}">
+        <div class="him-val">${cell.total>0?fmtM(cell.total):'—'}</div>
+        ${cell.count>0?`<div class="him-deals">${cell.count} DEALS</div>`:''}
+        ${deltaHtml}
+      </td>`;
     });
+    html+='</tr>';
   });
 
-  // Total row
-  html+=`<div style="padding:6px 8px;font-size:10px;font-weight:700;color:#8a9ab8;text-align:right;letter-spacing:.04em;border-top:1px solid rgba(255,255,255,0.07);margin-top:1px;">TOTALE</div>`;
+  // TOTALE row
+  html+='<tr class="him-total-row"><td class="him-td" style="border-left:none;"><div class="him-label-cell" style="padding:0;"><span class="him-prob-text" style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#FDFDFD;">TOTALE</span></div></td>';
   S.periods.forEach((_,pi)=>{
     const tot=matrix.reduce((s,row)=>s+row[pi].total,0);
     const cnt=matrix.reduce((s,row)=>s+row[pi].count,0);
-    let trend='';
-    if(pi>0){
+    const isLast=pi===lastIdx&&S.periods.length>1;
+    let deltaHtml='';
+    if(isLast&&pi>0){
       const prev=matrix.reduce((s,row)=>s+row[pi-1].total,0);
-      if(tot>prev) trend=`<span style="color:#00E676;font-size:10px;">▲</span>`;
-      else if(tot<prev) trend=`<span style="color:#FF4560;font-size:10px;">▼</span>`;
+      if(prev>0){
+        const pct=((tot-prev)/prev*100);
+        const sign=pct>=0?'+':'';
+        const color=pct>0?'#34d399':'#f87171';
+        const arrow=pct>0?'▲':pct<0?'▼':'─';
+        deltaHtml=`<div class="him-delta" style="color:${color};font-size:10px;">${arrow} ${sign}${pct.toFixed(0)}%</div>`;
+      }
     }
-    html+=`<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px 10px;text-align:center;border-top:1px solid rgba(255,255,255,0.07);margin-top:1px;">
-      <div style="font-size:12px;font-weight:700;color:#093866;">${fmtM(tot)} ${trend}</div>
-      <div style="font-size:9px;color:#6a90b0;">${cnt} deal</div>
-    </div>`;
+    html+=`<td class="him-td him-total-row" style="background:#093866;border-color:#093866;">
+      <div class="him-val" style="color:#FDFDFD;">${tot>0?fmtM(tot):'—'}</div>
+      ${cnt>0?`<div class="him-deals" style="color:rgba(255,255,255,.4);">${cnt} DEALS</div>`:''}
+      ${deltaHtml}
+    </td>`;
   });
-
-  html+='</div>';
+  html+='</tr></tbody></table>';
   el.innerHTML=html;
 }
 
