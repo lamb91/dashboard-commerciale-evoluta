@@ -332,6 +332,12 @@ header{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 18px;hei
       <!-- KPI strip 2: valori € -->
       <div class="kpi-strip" id="kpiStrip2" style="margin-top:-4px;margin-bottom:9px;"></div>
 
+      <!-- Grafico linee: importo per fascia probabilità per periodo -->
+      <div class="cc" style="margin-bottom:11px;">
+        <div class="cc-title">📈 Totale importo deal per periodo — fasce di probabilità</div>
+        <div class="chart-box" style="height:260px;"><canvas id="probLineChart"></canvas></div>
+      </div>
+
       <!-- HERO: Tracciamento deal periodo per periodo -->
       <div class="cc" style="margin-bottom:11px;">
         <div class="cc-title" style="font-size:10px;">
@@ -352,12 +358,6 @@ header{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 18px;hei
         <div class="dt-wrap" style="max-height:calc(100vh - 380px);min-height:220px;">
           <table class="dt" id="deltaTable"></table>
         </div>
-      </div>
-
-      <!-- Grafico linee: importo per fascia probabilità per periodo -->
-      <div class="cc" style="margin-bottom:11px;">
-        <div class="cc-title">📈 Totale importo deal per periodo — fasce di probabilità</div>
-        <div class="chart-box" style="height:260px;"><canvas id="probLineChart"></canvas></div>
       </div>
 
     </div>
@@ -905,7 +905,7 @@ function buildProbLineChart(){
       scales:{
         x:{ticks:{color:'#4a5a78',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}},
         y:{
-          ticks:{color:'#4a5a78',font:{size:10},callback:v=>fmtM(v)},
+          ticks:{color:'#4a5a78',font:{size:10},callback:v=>fmtM(v),stepSize:50000},
           grid:{color:'rgba(255,255,255,0.04)'}
         }
       }
