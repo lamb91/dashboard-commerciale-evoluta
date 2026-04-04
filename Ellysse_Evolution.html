@@ -335,7 +335,7 @@ header{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 18px;hei
       <!-- Grafico linee: importo per fascia probabilità per periodo -->
       <div class="cc" style="margin-bottom:11px;">
         <div class="cc-title">📈 Totale importo deal per periodo — fasce di probabilità</div>
-        <div class="chart-box" style="height:260px;"><canvas id="probLineChart"></canvas></div>
+        <div class="chart-box" style="height:360px;"><canvas id="probLineChart"></canvas></div>
       </div>
 
       <!-- HERO: Tracciamento deal periodo per periodo -->
@@ -905,6 +905,8 @@ function buildProbLineChart(){
       scales:{
         x:{ticks:{color:'#4a5a78',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}},
         y:{
+          beginAtZero:true,
+          min:0,
           ticks:{color:'#4a5a78',font:{size:10},callback:v=>fmtM(v),stepSize:50000},
           grid:{color:'rgba(255,255,255,0.04)'}
         }
