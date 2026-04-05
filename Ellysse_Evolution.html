@@ -7,7 +7,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
 :root{
   --bg:#FDFDFD;--bg2:#EEF4FB;
   --glass:rgba(9,56,102,.04);--glass2:rgba(9,56,102,.08);
@@ -33,7 +33,7 @@ header, .sidebar, .chat-bar, .chat-input-row, .qchips,
 }
 
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Syne',system-ui,sans-serif;overflow:hidden;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Montserrat',system-ui,sans-serif;overflow:hidden;}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:radial-gradient(ellipse 70% 50% at 0% 0%,rgba(247,148,30,.06),transparent 55%),
              radial-gradient(ellipse 60% 45% at 100% 100%,rgba(9,56,102,.08),transparent 55%);}
@@ -62,7 +62,7 @@ header{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 18px;hei
 @keyframes p{0%,100%{opacity:1;}50%{opacity:.3;}}
 .hright{margin-left:auto;display:flex;align-items:center;gap:7px;}
 .hbtn{padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:var(--glass2);
-  color:var(--text2);font-size:10px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .15s;}
+  color:var(--text2);font-size:10px;cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .15s;}
 .hbtn:hover{border-color:var(--border2);color:var(--text);}
 .model-pill{padding:2px 8px;border-radius:4px;background:rgba(247,148,30,.12);
   border:1px solid rgba(247,148,30,.35);font-size:8px;font-family:var(--mono);font-weight:700;color:#F7941E;}
@@ -423,7 +423,7 @@ header::after{
   pointer-events:none;
   z-index:10;
 }
-.brand{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;letter-spacing:-.02em;color:#FDFDFD;}
+.brand{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:800;letter-spacing:-.02em;color:#FDFDFD;}
 .brand-sub{font-family:'IBM Plex Mono',monospace;font-size:7px;color:rgba(255,255,255,.35);letter-spacing:.14em;}
 .logo{width:36px !important;height:36px !important;font-size:15px !important;border-radius:8px !important;}
 
@@ -444,7 +444,7 @@ header::after{
   color:rgba(255,255,255,.4);font-weight:500;
 }
 .h-kpi-val{
-  font-family:'Syne',sans-serif;
+  font-family:'Montserrat',sans-serif;
   font-size:22px;font-weight:800;color:#FDFDFD;
   letter-spacing:-.03em;line-height:1;
 }
@@ -511,7 +511,7 @@ header::after{
   width:36px;height:36px;border-radius:8px;
   background:linear-gradient(135deg,#F7941E,#c96900);
   display:flex;align-items:center;justify-content:center;
-  font-family:'Syne',sans-serif;font-weight:900;font-size:14px;color:#fff;
+  font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px;color:#fff;
   box-shadow:0 0 12px rgba(247,148,30,.3);
 }
 /* Expanded panel (slides from strip) */
@@ -533,7 +533,7 @@ header::after{
   flex-shrink:0;
 }
 .sb-panel-title{
-  font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:#FDFDFD;letter-spacing:.04em;
+  font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;color:#FDFDFD;letter-spacing:.04em;
 }
 .sb-panel-close{
   width:22px;height:22px;border-radius:4px;border:1px solid rgba(255,255,255,.12);
@@ -563,7 +563,7 @@ header::after{
 }
 .period-receipt.active-receipt{border-left:3px solid #F7941E;}
 .period-receipt-label{
-  font-family:'Syne',sans-serif;font-weight:300;font-size:32px;
+  font-family:'Montserrat',sans-serif;font-weight:300;font-size:32px;
   color:#093866;line-height:1;letter-spacing:-.03em;
 }
 .period-receipt-date{
@@ -594,13 +594,13 @@ header::after{
 .sb-panel .autodet{font-size:8px;color:#00E676;font-weight:700;margin-left:4px;}
 .sb-legend-row{display:flex;align-items:center;gap:8px;padding:5px 0;}
 .sb-legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.sb-legend-label{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,.7);flex:1;}
+.sb-legend-label{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,.7);flex:1;}
 .sb-legend-range{font-family:'IBM Plex Mono',monospace;font-size:8px;color:rgba(255,255,255,.3);}
 .sb-panel-cta{padding:12px 16px;flex-shrink:0;margin-top:auto;border-top:1px solid rgba(255,255,255,.08);}
 .sb-panel-cta-btn{
   width:100%;padding:10px;border-radius:4px;border:none;
   background:linear-gradient(135deg,#F7941E,#c96900);
-  color:#fff;font-family:'Syne',sans-serif;font-size:11px;font-weight:800;
+  color:#fff;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;
   cursor:pointer;letter-spacing:.05em;transition:all .18s;
   box-shadow:0 2px 12px rgba(247,148,30,.25);
 }
@@ -618,33 +618,74 @@ header::after{
 }
 .dash-scroll{background:#FDFDFD;padding:36px 24px 16px !important;position:relative;z-index:1;}
 
-/* ── INSIGHT BANNER (newspaper masthead) ─────────────────────────────────── */
+/* ── INSIGHT BANNER — structured card ────────────────────────────────────── */
 .insight-banner{
-  background:#FDFDFD !important;
-  border:1px solid rgba(9,56,102,.1) !important;
-  border-left:3px solid #F7941E !important;
-  border-radius:0 !important;
-  padding:14px 20px !important;
-  font-family:'Syne',sans-serif !important;
-  font-size:14px !important;
-  font-weight:600 !important;
-  color:#3a6490 !important;
-  line-height:1.6 !important;
-  margin-bottom:20px !important;
+  background:#fff !important;
+  border:1px solid rgba(9,56,102,.12) !important;
+  border-top:3px solid #F7941E !important;
+  border-radius:6px !important;
+  padding:0 !important;
+  margin-bottom:16px !important;
+  overflow:hidden !important;
+  font-family:'Montserrat',sans-serif !important;
 }
-.insight-banner strong{color:#093866;font-weight:800;}
+.ib-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;background:rgba(9,56,102,.03);
+  border-bottom:1px solid rgba(9,56,102,.08);
+  flex-wrap:wrap;gap:6px;
+}
+.ib-title{
+  font-size:11px;font-weight:700;color:#093866;letter-spacing:.06em;text-transform:uppercase;
+}
+.ib-delta{
+  display:flex;align-items:center;gap:8px;
+}
+.ib-delta-val{
+  font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;
+}
+.ib-delta-pct{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;
+  padding:2px 7px;border-radius:3px;
+}
+.ib-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-bottom:1px solid rgba(9,56,102,.08);
+}
+.ib-stat{
+  padding:10px 14px;text-align:center;
+  border-right:1px solid rgba(9,56,102,.08);
+}
+.ib-stat:last-child{border-right:none;}
+.ib-stat-num{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:22px;font-weight:700;line-height:1;
+  display:block;margin-bottom:3px;
+}
+.ib-stat-lbl{
+  font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:#6a90b0;
+}
+.ib-movers{
+  display:flex;gap:6px;flex-wrap:wrap;padding:9px 16px;align-items:center;
+}
+.ib-mover-label{
+  font-size:9px;font-weight:700;color:#6a90b0;letter-spacing:.08em;
+  text-transform:uppercase;margin-right:2px;
+}
 .ins-pill{
   font-family:'IBM Plex Mono',monospace !important;
-  font-size:8px !important;letter-spacing:.12em !important;
-  background:#093866 !important;color:#FDFDFD !important;
-  border-color:#093866 !important;
-  border-radius:0 !important;padding:3px 10px !important;
+  font-size:9px !important;font-weight:600 !important;
+  letter-spacing:.05em !important;
+  border-radius:4px !important;
+  padding:3px 10px !important;
+  border:1px solid !important;
 }
 
 /* ── PIPELINE INTENSITY MATRIX (hero) ───────────────────────────────────── */
 .him-header{margin-bottom:10px;}
 .him-title{
-  font-family:'Syne',sans-serif;font-weight:800;
+  font-family:'Montserrat',sans-serif;font-weight:800;
   font-size:12px;letter-spacing:.14em;color:#093866;text-transform:uppercase;
 }
 .him-subtitle{
@@ -680,7 +721,7 @@ header::after{
 }
 .him-total-row:hover .him-td{background:#093866 !important;box-shadow:none !important;}
 .him-val{
-  font-family:'Syne',sans-serif;font-size:18px;font-weight:800;
+  font-family:'Montserrat',sans-serif;font-size:18px;font-weight:800;
   color:#093866;line-height:1;
 }
 .him-deals{
@@ -690,7 +731,7 @@ header::after{
 .him-delta{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;margin-top:2px;}
 .him-label-cell{display:flex;align-items:center;gap:10px;}
 .him-prob-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-.him-prob-text{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#093866;}
+.him-prob-text{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:800;color:#093866;}
 /* DELTA column: 2px orange left border */
 .him-table .delta-col{border-left:2px solid #F7941E !important;}
 /* TOTALE row */
@@ -703,8 +744,8 @@ header::after{
 .cc{border-radius:0 !important;border-color:rgba(9,56,102,.1) !important;}
 .cc-title{font-family:'IBM Plex Mono',monospace !important;font-size:8px !important;letter-spacing:.12em !important;text-transform:uppercase;}
 .dt th{font-family:'IBM Plex Mono',monospace !important;font-size:8px !important;letter-spacing:.1em !important;}
-.dt td{font-family:'Syne',sans-serif;font-size:11px;}
-.deal-primary{font-family:'Syne',sans-serif !important;font-weight:700 !important;}
+.dt td{font-family:'Montserrat',sans-serif;font-size:11px;}
+.deal-primary{font-family:'Montserrat',sans-serif !important;font-weight:700 !important;}
 .f-sel,.f-inp{font-family:'IBM Plex Mono',monospace;font-size:9px;}
 
 /* ── INTELLIGENCE AGENT FLOATING PANEL ───────────────────────────────────── */
@@ -743,11 +784,11 @@ header::after{
 }
 .cmsg.user .cbubble{
   background:rgba(247,148,30,.15) !important;border-color:rgba(247,148,30,.3) !important;
-  color:#FDFDFD !important;font-family:'Syne',sans-serif;
+  color:#FDFDFD !important;font-family:'Montserrat',sans-serif;
 }
 .cmsg.ai .cbubble{
   background:rgba(255,255,255,.06) !important;border-color:rgba(255,255,255,.1) !important;
-  color:#FDFDFD !important;font-family:'Syne',sans-serif;font-size:11px;
+  color:#FDFDFD !important;font-family:'Montserrat',sans-serif;font-size:11px;
 }
 .ia-chips{
   display:flex;gap:5px;flex-wrap:wrap;padding:5px 12px;flex-shrink:0;
@@ -769,7 +810,7 @@ header::after{
 }
 .ia-inp{
   flex:1;padding:7px 10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
-  color:#FDFDFD;font-family:'Syne',sans-serif;font-size:11px;outline:none;border-radius:0;
+  color:#FDFDFD;font-family:'Montserrat',sans-serif;font-size:11px;outline:none;border-radius:0;
   transition:border-color .18s;
 }
 .ia-inp:focus{border-color:rgba(247,148,30,.6);}
@@ -804,9 +845,9 @@ header::after{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect x='40' y='80' width='60' height='120' rx='4' fill='%23093866' opacity='.04'/%3E%3Crect x='120' y='50' width='60' height='150' rx='4' fill='%23093866' opacity='.04'/%3E%3Crect x='200' y='30' width='60' height='170' rx='4' fill='%23093866' opacity='.04'/%3E%3Crect x='280' y='60' width='60' height='140' rx='4' fill='%23093866' opacity='.04'/%3E%3Cline x1='40' y1='220' x2='360' y2='220' stroke='%23093866' stroke-opacity='.06' stroke-width='1'/%3E%3Cline x1='40' y1='180' x2='360' y2='180' stroke='%23093866' stroke-opacity='.04' stroke-width='1'/%3E%3Cline x1='40' y1='140' x2='360' y2='140' stroke='%23093866' stroke-opacity='.04' stroke-width='1'/%3E%3Cline x1='40' y1='100' x2='360' y2='100' stroke='%23093866' stroke-opacity='.04' stroke-width='1'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:center 40%;background-size:500px;
 }
-.e-title{font-family:'Syne',sans-serif !important;font-size:28px !important;font-weight:800 !important;letter-spacing:-.03em !important;}
-.e-sub{font-family:'Syne',sans-serif;font-size:13px;}
-.e-step{font-family:'Syne',sans-serif;border-radius:0 !important;}
+.e-title{font-family:'Montserrat',sans-serif !important;font-size:28px !important;font-weight:800 !important;letter-spacing:-.03em !important;}
+.e-sub{font-family:'Montserrat',sans-serif;font-size:13px;}
+.e-step{font-family:'Montserrat',sans-serif;border-radius:0 !important;}
 .e-n{border-radius:0 !important;font-family:'IBM Plex Mono',monospace !important;}
 
 /* ── HIDE OLD CHAT BAR ───────────────────────────────────────────────────── */
@@ -1397,30 +1438,51 @@ function buildInsightBanner(){
   if(S.periods.length<2){document.getElementById('insightBanner').style.display='none';return;}
   const b=document.getElementById('insightBanner');
   b.style.display='block';
-  const nUp=S.tracked.filter(d=>d.status==='up').length;
-  const nDown=S.tracked.filter(d=>d.status==='down').length;
-  const nNew=S.tracked.filter(d=>d.status==='new').length;
-  const nLost=S.tracked.filter(d=>d.status==='lost').length;
-  const nStable=S.tracked.filter(d=>d.status==='stable').length;
-  const lastIdx=S.periods.length-1;
-  const prevIdx=lastIdx-1;
-  const lastVal=S.tracked.reduce((a,d)=>a+(d.pdata[lastIdx]?.value||0),0);
-  const prevVal=S.tracked.reduce((a,d)=>a+(d.pdata[prevIdx]?.value||0),0);
-  const deltaVal=lastVal-prevVal;
-  const topUp=S.tracked.filter(d=>d.status==='up').sort((a,b)=>b.deltaProb-a.deltaProb).slice(0,2);
-  const topDown=S.tracked.filter(d=>d.status==='down').sort((a,b)=>a.deltaProb-b.deltaProb).slice(0,2);
+  const nUp   = S.tracked.filter(d=>d.status==='up').length;
+  const nDown = S.tracked.filter(d=>d.status==='down').length;
+  const nNew  = S.tracked.filter(d=>d.status==='new').length;
+  const nLost = S.tracked.filter(d=>d.status==='lost').length;
+  const lastIdx = S.periods.length-1;
+  const prevIdx = lastIdx-1;
+  const lastVal = S.tracked.reduce((a,d)=>a+(d.pdata[lastIdx]?.value||0),0);
+  const prevVal = S.tracked.reduce((a,d)=>a+(d.pdata[prevIdx]?.value||0),0);
+  const deltaVal = lastVal-prevVal;
   const pctChange = prevVal>0?((deltaVal/prevVal)*100).toFixed(1):null;
-  const pctStr = pctChange ? `<strong style="color:${deltaVal>=0?'#059669':'#dc3555'};">${deltaVal>=0?'+':''}${pctChange}%</strong> ` : '';
+  const isPos = deltaVal>=0;
+  const posC='#059669', negC='#dc3555';
+  const topUp   = S.tracked.filter(d=>d.status==='up').sort((a,b)=>b.deltaProb-a.deltaProb).slice(0,2);
+  const topDown = S.tracked.filter(d=>d.status==='down').sort((a,b)=>a.deltaProb-b.deltaProb).slice(0,2);
+
   b.innerHTML=`
-    Pipeline ${S.periods[prevIdx].label} → <strong>${S.periods[lastIdx].label}</strong>:
-    variazione ${pctStr}<strong style="color:${deltaVal>=0?'#059669':'#dc3555'};">${deltaVal>=0?'+':''}${fmtM(deltaVal)}</strong> —
-    <strong style="color:#059669;">${nUp} ↑</strong> in salita ·
-    <strong style="color:#dc3555;">${nDown} ↓</strong> in calo ·
-    <strong style="color:#0ea5e9;">${nNew}</strong> nuovi ·
-    <strong style="color:#6a90b0;">${nLost}</strong> usciti
-    <div class="insight-pills" style="margin-top:8px;gap:5px;display:flex;flex-wrap:wrap;">
-      ${topUp.map(d=>`<span class="ins-pill" style="color:#059669;border-color:rgba(5,150,105,.3);background:rgba(5,150,105,.06);">↑ ${(d.companyName||d.displayName).slice(0,22)} +${Math.round(d.deltaProb*100)}pp</span>`).join('')}
-      ${topDown.map(d=>`<span class="ins-pill" style="color:#dc3555;border-color:rgba(220,53,85,.3);background:rgba(220,53,85,.05);">↓ ${(d.companyName||d.displayName).slice(0,22)} ${Math.round(d.deltaProb*100)}pp</span>`).join('')}
+    <div class="ib-head">
+      <span class="ib-title">Pipeline ${S.periods[prevIdx].label} → ${S.periods[lastIdx].label}</span>
+      <div class="ib-delta">
+        <span class="ib-delta-val" style="color:${isPos?posC:negC};">${isPos?'+':''}${fmtM(deltaVal)}</span>
+        ${pctChange?`<span class="ib-delta-pct" style="color:${isPos?posC:negC};background:${isPos?'rgba(5,150,105,.08)':'rgba(220,53,85,.08)'};">${isPos?'+':''}${pctChange}%</span>`:''}
+      </div>
+    </div>
+    <div class="ib-stats">
+      <div class="ib-stat">
+        <span class="ib-stat-num" style="color:${posC};">${nUp}</span>
+        <span class="ib-stat-lbl">↑ In salita</span>
+      </div>
+      <div class="ib-stat">
+        <span class="ib-stat-num" style="color:${negC};">${nDown}</span>
+        <span class="ib-stat-lbl">↓ In calo</span>
+      </div>
+      <div class="ib-stat">
+        <span class="ib-stat-num" style="color:#0ea5e9;">${nNew}</span>
+        <span class="ib-stat-lbl">✦ Nuovi</span>
+      </div>
+      <div class="ib-stat">
+        <span class="ib-stat-num" style="color:#6a90b0;">${nLost}</span>
+        <span class="ib-stat-lbl">✕ Usciti</span>
+      </div>
+    </div>
+    <div class="ib-movers">
+      <span class="ib-mover-label">Top movers:</span>
+      ${topUp.map(d=>`<span class="ins-pill" style="color:${posC};border-color:rgba(5,150,105,.25);background:rgba(5,150,105,.06);">↑ ${(d.companyName||d.displayName).slice(0,24)} +${Math.round(d.deltaProb*100)}pp</span>`).join('')}
+      ${topDown.map(d=>`<span class="ins-pill" style="color:${negC};border-color:rgba(220,53,85,.25);background:rgba(220,53,85,.05);">↓ ${(d.companyName||d.displayName).slice(0,24)} ${Math.round(d.deltaProb*100)}pp</span>`).join('')}
     </div>
   `;
 }

@@ -248,6 +248,12 @@ iframe { width: 100%; height: 100%; border: none; display: block; }
         <span>War Room 2026</span>
         <span class="tab-badge">LIVE</span>
       </button>
+      <button class="tab" id="tab-commerciale" onclick="switchTab('commerciale')">
+        <div class="tab-status" id="status-commerciale"></div>
+        <span class="tab-icon">👥</span>
+        <span>Dashboard Commerciale</span>
+        <span class="tab-badge">CLIENTI</span>
+      </button>
     </div>
 
     <!-- API Key (shared across all tools) -->
@@ -331,6 +337,22 @@ iframe { width: 100%; height: 100%; border: none; display: block; }
       <iframe id="frame-warroom" title="War Room 2026" style="display:none;"></iframe>
     </div>
 
+    <!-- Dashboard Commerciale (lazy) -->
+    <div class="tab-pane" id="pane-commerciale">
+      <div class="welcome-pane" id="welcome-commerciale">
+        <div class="welcome-icon">👥</div>
+        <div class="welcome-title">Dashboard Commerciale</div>
+        <div class="welcome-sub">Confronto per cliente delle percentuali di avanzamento dei progetti nei mesi per il team commerciale.</div>
+        <button class="welcome-btn" onclick="loadTab('commerciale')">Apri Dashboard Commerciale →</button>
+      </div>
+      <div class="loading-screen" id="loading-commerciale" style="display:none;">
+        <div class="loading-icon">👥</div>
+        <div class="loading-title">Caricamento Dashboard Commerciale…</div>
+        <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
+      </div>
+      <iframe id="frame-commerciale" title="Dashboard Commerciale" style="display:none;"></iframe>
+    </div>
+
   </div><!-- /.content-area -->
 </div><!-- /.shell -->
 
@@ -340,7 +362,8 @@ const TOOLS = {
   evolution: { src: 'Ellysse_Evolution.html',    needsKey: true  },
   smartdash: { src: 'Ellysse_SmartDash.html',    needsKey: true  },
   analyst:   { src: 'Ellysse_AIAnalyst.html',    needsKey: true  },
-  warroom:   { src: 'Ellysse_WarRoom_2026.html', needsKey: false },
+  warroom:     { src: 'Ellysse_WarRoom_2026.html',                    needsKey: false },
+  commerciale: { src: 'Ellysse_Dashboard_Commerciale_2026-03-24.html', needsKey: false },
 };
 
 // ── STATE ──────────────────────────────────────────────────────────────────────
