@@ -653,7 +653,7 @@ header::after{
   border-bottom:1px solid rgba(9,56,102,.08);
 }
 .ib-stat{
-  padding:10px 14px;text-align:center;
+  padding:14px 14px 12px;text-align:center;
   border-right:1px solid rgba(9,56,102,.08);
 }
 .ib-stat:last-child{border-right:none;}
@@ -661,6 +661,11 @@ header::after{
   font-family:'IBM Plex Mono',monospace;
   font-size:22px;font-weight:700;line-height:1;
   display:block;margin-bottom:3px;
+}
+.ib-stat-euro{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;font-weight:700;line-height:1.1;
+  display:block;margin-bottom:4px;
 }
 .ib-stat-lbl{
   font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
@@ -674,11 +679,11 @@ header::after{
   text-transform:uppercase;margin-right:2px;
 }
 .ins-pill{
-  font-family:'IBM Plex Mono',monospace !important;
-  font-size:9px !important;font-weight:600 !important;
-  letter-spacing:.05em !important;
-  border-radius:4px !important;
-  padding:3px 10px !important;
+  font-family:'Montserrat',sans-serif !important;
+  font-size:11px !important;font-weight:700 !important;
+  letter-spacing:.01em !important;
+  border-radius:5px !important;
+  padding:5px 13px !important;
   border:1px solid !important;
 }
 
@@ -1441,51 +1446,68 @@ function buildInsightBanner(){
   if(S.periodi.length<2){document.getElementById('insightBanner').style.display='none';return;}
   const b=document.getElementById('insightBanner');
   b.style.display='block';
-  const nUp   = S.tracked.filter(d=>d.status==='up').length;
-  const nDown = S.tracked.filter(d=>d.status==='down').length;
-  const nNew  = S.tracked.filter(d=>d.status==='new').length;
-  const nLost = S.tracked.filter(d=>d.status==='lost').length;
   const lastIdx = S.periodi.length-1;
   const prevIdx = lastIdx-1;
-  const lastVal = S.tracked.reduce((a,d)=>a+(d.pdata[lastIdx]?.value||0),0);
-  const prevVal = S.tracked.reduce((a,d)=>a+(d.pdata[prevIdx]?.value||0),0);
+  const firstIdx = 0;
+
+  // Calcola i gruppi di trattative
+  const upDeals   = S.tracked.filter(d=>d.status==='up');
+  const downDeals = S.tracked.filter(d=>d.status==='down');
+  const newDeals  = S.tracked.filter(d=>d.status==='new');
+  const lostDeals = S.tracked.filter(d=>d.status==='lost');
+  const sumVal = arr => arr.reduce((a,d)=>a+(d.pdata[lastIdx]?.value||d.value||0),0);
+
+  const lastVal  = S.tracked.reduce((a,d)=>a+(d.pdata[lastIdx]?.value||0),0);
+  const prevVal  = S.tracked.reduce((a,d)=>a+(d.pdata[prevIdx]?.value||0),0);
   const deltaVal = lastVal-prevVal;
   const pctChange = prevVal>0?((deltaVal/prevVal)*100).toFixed(1):null;
   const isPos = deltaVal>=0;
   const posC='#059669', negC='#dc3555';
-  const topUp   = S.tracked.filter(d=>d.status==='up').sort((a,b)=>b.deltaProb-a.deltaProb).slice(0,2);
-  const topDown = S.tracked.filter(d=>d.status==='down').sort((a,b)=>a.deltaProb-b.deltaProb).slice(0,2);
+
+  // Top 2 salita e calo per delta probabilità
+  const topUp   = upDeals.sort((a,b)=>b.deltaProb-a.deltaProb).slice(0,2);
+  const topDown = downDeals.sort((a,b)=>a.deltaProb-b.deltaProb).slice(0,2);
+
+  // Titolo: sempre dal primo all'ultimo periodo
+  const rangeLabel = S.periodi.length>2
+    ? `${S.periodi[firstIdx].label} → ${S.periodi[lastIdx].label}`
+    : `${S.periodi[prevIdx].label} → ${S.periodi[lastIdx].label}`;
 
   b.innerHTML=`
     <div class="ib-head">
-      <span class="ib-title">Pipeline ${S.periodi[prevIdx].label} → ${S.periodi[lastIdx].label}</span>
+      <span class="ib-title">Pipeline ${rangeLabel}</span>
       <div class="ib-delta">
         <span class="ib-delta-val" style="color:${isPos?posC:negC};">${isPos?'+':''}${fmtM(deltaVal)}</span>
         ${pctChange?`<span class="ib-delta-pct" style="color:${isPos?posC:negC};background:${isPos?'rgba(5,150,105,.08)':'rgba(220,53,85,.08)'};">${isPos?'+':''}${pctChange}%</span>`:''}
+        <span style="font-size:9px;color:#6a90b0;font-family:'IBM Plex Mono',monospace;">vs periodo precedente</span>
       </div>
     </div>
     <div class="ib-stats">
       <div class="ib-stat">
-        <span class="ib-stat-num" style="color:${posC};">${nUp}</span>
+        <span class="ib-stat-num" style="color:${posC};">${upDeals.length}</span>
+        <span class="ib-stat-euro" style="color:${posC};">${fmtM(sumVal(upDeals))}</span>
         <span class="ib-stat-lbl">↑ In salita</span>
       </div>
       <div class="ib-stat">
-        <span class="ib-stat-num" style="color:${negC};">${nDown}</span>
+        <span class="ib-stat-num" style="color:${negC};">${downDeals.length}</span>
+        <span class="ib-stat-euro" style="color:${negC};">${fmtM(sumVal(downDeals))}</span>
         <span class="ib-stat-lbl">↓ In calo</span>
       </div>
       <div class="ib-stat">
-        <span class="ib-stat-num" style="color:#0ea5e9;">${nNew}</span>
+        <span class="ib-stat-num" style="color:#0ea5e9;">${newDeals.length}</span>
+        <span class="ib-stat-euro" style="color:#0ea5e9;">${fmtM(sumVal(newDeals))}</span>
         <span class="ib-stat-lbl">✦ Nuovi</span>
       </div>
       <div class="ib-stat">
-        <span class="ib-stat-num" style="color:#6a90b0;">${nLost}</span>
+        <span class="ib-stat-num" style="color:#6a90b0;">${lostDeals.length}</span>
+        <span class="ib-stat-euro" style="color:#6a90b0;">${fmtM(sumVal(lostDeals))}</span>
         <span class="ib-stat-lbl">✕ Usciti</span>
       </div>
     </div>
     <div class="ib-movers">
-      <span class="ib-mover-label">Top movers:</span>
-      ${topUp.map(d=>`<span class="ins-pill" style="color:${posC};border-color:rgba(5,150,105,.25);background:rgba(5,150,105,.06);">↑ ${(d.companyName||d.displayName).slice(0,24)} +${Math.round(d.deltaProb*100)}pp</span>`).join('')}
-      ${topDown.map(d=>`<span class="ins-pill" style="color:${negC};border-color:rgba(220,53,85,.25);background:rgba(220,53,85,.05);">↓ ${(d.companyName||d.displayName).slice(0,24)} ${Math.round(d.deltaProb*100)}pp</span>`).join('')}
+      <span class="ib-mover-label">Top variazioni:</span>
+      ${topUp.map(d=>`<span class="ins-pill" style="color:${posC};border-color:rgba(5,150,105,.25);background:rgba(5,150,105,.06);">↑ ${(d.companyName||d.displayName).slice(0,28)} +${Math.round(d.deltaProb*100)}pp</span>`).join('')}
+      ${topDown.map(d=>`<span class="ins-pill" style="color:${negC};border-color:rgba(220,53,85,.25);background:rgba(220,53,85,.05);">↓ ${(d.companyName||d.displayName).slice(0,28)} ${Math.round(d.deltaProb*100)}pp</span>`).join('')}
     </div>
   `;
 }
