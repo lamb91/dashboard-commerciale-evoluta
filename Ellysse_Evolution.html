@@ -861,16 +861,16 @@ header::after{
 <!-- HEADER -->
 <header>
   <div class="logo">E</div>
-  <div><div class="brand">Pipeline Evolution</div><div class="brand-sub">ELLYSSE · MULTI-PERIOD INTELLIGENCE</div></div>
+  <div><div class="brand">Pipeline Evolution</div><div class="brand-sub">ELLYSSE · INTELLIGENCE MULTI-PERIODO</div></div>
   <div class="hsep"></div>
   <!-- KPI inline -->
   <div class="h-kpis" id="hKpis"></div>
   <div class="hsep" style="margin:0 12px;"></div>
-  <div class="chip" id="periodsChip"><div class="cdot"></div>0 periodi</div>
+  <div class="chip" id="periodiChip"><div class="cdot"></div>0 periodi</div>
   <div class="chip" id="apiChip" style="margin-left:6px;"><div class="cdot"></div>API: —</div>
   <div class="model-pill" style="margin-left:8px;">gemini-2.5-flash-lite</div>
   <div class="hright">
-    <button class="hbtn" onclick="exportReport()">↓ Export</button>
+    <button class="hbtn" onclick="exportReport()">↓ Esporta</button>
     <button class="hbtn" id="dealsChip" style="display:none;border-color:rgba(0,230,118,.3);color:#00E676;background:rgba(0,230,118,.07);"><div class="cdot pulse" style="background:var(--green);display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:4px;"></div><span id="dealsChipTxt"></span></button>
   </div>
 </header>
@@ -886,22 +886,22 @@ header::after{
         <div class="sb-ico-logo">E</div>
       </div>
       <div class="sb-strip-icons">
-        <div class="sb-ico active" id="icoData" title="Data Pipeline" onclick="sbToggle('data')">
+        <div class="sb-ico active" id="icoData" title="Dati" onclick="sbToggle('data')">
           <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 16v4h16v-4M4 8v8M20 8v8M4 4h16v4H4z"/></svg>
           <div class="sb-ico-pulse" id="dataPulse" style="display:none;"></div>
         </div>
-        <div class="sb-ico" id="icoMap" title="Column Mapping" onclick="sbToggle('mapping')">
+        <div class="sb-ico" id="icoMap" title="Mappatura colonne" onclick="sbToggle('mapping')">
           <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 17H5a2 2 0 00-2 2v0a2 2 0 002 2h4M15 3h4a2 2 0 012 2v0a2 2 0 01-2 2h-4M9 12H3M15 12h6M9 7H5a2 2 0 00-2 2v0a2 2 0 002 2h4M15 17h4a2 2 0 012 2v0a2 2 0 01-2 2h-4"/></svg>
         </div>
-        <div class="sb-ico" id="icoApi" title="API Configuration" onclick="sbToggle('api')">
+        <div class="sb-ico" id="icoApi" title="Config. APIuration" onclick="sbToggle('api')">
           <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
         </div>
-        <div class="sb-ico" id="icoLgd" title="Period Legend" onclick="sbToggle('legend')">
+        <div class="sb-ico" id="icoLgd" title="Legenda periodi" onclick="sbToggle('legend')">
           <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M3 12h3M18 12h3M12 3v3M12 18v3"/></svg>
         </div>
       </div>
       <div class="sb-strip-bottom">
-        <div class="sb-ico" title="Run Analysis" onclick="buildComparison()">
+        <div class="sb-ico" title="Avvia analisi" onclick="buildComparison()">
           <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
         </div>
       </div>
@@ -911,7 +911,7 @@ header::after{
     <div class="sb-panel" id="sbPanel">
       <div class="sb-panel-inner">
         <div class="sb-panel-header">
-          <div class="sb-panel-title" id="sbPanelTitle">DATA PIPELINE</div>
+          <div class="sb-panel-title" id="sbPanelTitle">CARICAMENTO DATI</div>
           <button class="sb-panel-close" onclick="sbClose()">×</button>
         </div>
 
@@ -920,34 +920,34 @@ header::after{
           <div class="sb-ptitle">Upload Files</div>
           <div class="dz" id="dz" style="margin-bottom:10px;">
             <input type="file" id="fileInp" accept=".xlsx,.xls,.csv" multiple onchange="handleFiles(event)"/>
-            <div class="dz-txt" style="font-size:10px;font-family:IBM Plex Mono,monospace;">↑ DRAG FILES HERE</div>
-            <div class="dz-sub" style="font-family:IBM Plex Mono,monospace;font-size:8px;letter-spacing:.08em;">ONE FILE = ONE PERIOD</div>
+            <div class="dz-txt" style="font-size:10px;font-family:IBM Plex Mono,monospace;">↑ TRASCINA I FILE QUI</div>
+            <div class="dz-sub" style="font-family:IBM Plex Mono,monospace;font-size:8px;letter-spacing:.08em;">UN FILE = UN PERIODO</div>
           </div>
           <div id="fileList"></div>
         </div>
 
         <!-- MAPPING -->
         <div class="sb-psec" id="panelMapping" style="display:none;">
-          <div class="sb-ptitle">Column Mapping <span class="sb-panel .autodet" id="autoDetectBadge" style="display:none;">✓ AUTO-DETECTED</span></div>
+          <div class="sb-ptitle">Mappatura colonne <span class="sb-panel .autodet" id="autoDetectBadge" style="display:none;">✓ AUTO-RILEVATO</span></div>
           <div id="colMap"></div>
         </div>
 
         <!-- API -->
         <div class="sb-psec" id="panelApi" style="display:none;">
-          <div class="sb-ptitle">API Configuration</div>
+          <div class="sb-ptitle">Config. APIuration</div>
           <input type="password" class="api-inp" id="apiInp" placeholder="sk-or-v1-..." autocomplete="off" spellcheck="false" oninput="setApiKey(this.value)"/>
-          <div class="api-hint" style="margin-top:5px;font-size:8px;font-family:IBM Plex Mono,monospace;"><a href="https://openrouter.ai/keys" target="_blank" style="color:#F7941E;text-decoration:none;">→ GET FREE KEY</a> · gemini-2.5-flash-lite</div>
+          <div class="api-hint" style="margin-top:5px;font-size:8px;font-family:IBM Plex Mono,monospace;"><a href="https://openrouter.ai/keys" target="_blank" style="color:#F7941E;text-decoration:none;">→ OTTIENI CHIAVE GRATUITA</a> · gemini-2.5-flash-lite</div>
         </div>
 
         <!-- LEGEND -->
         <div class="sb-psec" id="panelLegend" style="display:none;">
-          <div class="sb-ptitle">Period Legend</div>
+          <div class="sb-ptitle">Legenda periodi</div>
           <div id="legendItems"></div>
         </div>
 
         <div style="flex:1;min-height:20px;"></div>
         <div class="sb-panel-cta">
-          <button class="sb-panel-cta-btn" onclick="buildComparison()">↺ NEW ANALYSIS</button>
+          <button class="sb-panel-cta-btn" onclick="buildComparison()">↺ NUOVA ANALISI</button>
         </div>
       </div>
     </div>
@@ -983,11 +983,11 @@ header::after{
       <div id="kpiStrip" style="display:none;"></div>
       <div id="kpiStrip2" style="display:none;"></div>
 
-      <!-- Pipeline Intensity Matrix -->
+      <!-- Matrice Intensità Pipeline -->
       <div style="margin-bottom:13px;">
         <div class="him-header">
-          <div class="him-title">Pipeline Intensity Matrix</div>
-          <div class="him-subtitle">Values in € (Millions)</div>
+          <div class="him-title">Matrice Intensità Pipeline</div>
+          <div class="him-subtitle">Valori in € (Milioni)</div>
         </div>
         <div class="him-wrap">
           <div id="probHeatmap"></div>
@@ -997,7 +997,7 @@ header::after{
       <!-- HERO: Tracciamento deal periodo per periodo -->
       <div class="cc" style="margin-bottom:11px;">
         <div class="cc-title" style="font-size:10px;">
-          🔄 Tracciamento deal periodo per periodo
+          🔄 Tracciamento trattative periodo per periodo
           <div class="filter-row" style="margin:0;margin-left:8px;">
             <select class="f-sel" id="deltaFilter" onchange="filterDelta()">
               <option value="">Tutti</option>
@@ -1029,12 +1029,12 @@ header::after{
 <!-- INTELLIGENCE AGENT FLOATING PANEL -->
 <div class="ia-panel hidden" id="iaPanel">
   <div class="ia-header">
-    <div class="ia-title">Intelligence Agent</div>
+    <div class="ia-title">Agente Intelligenza</div>
     <button class="ia-close" onclick="toggleIA()">×</button>
   </div>
   <div class="ia-chips" id="quickChips" style="display:none;"></div>
   <div class="ia-hist" id="chatHist" style="display:none;"></div>
-  <div class="ia-hint" id="cHint">Load data files to activate</div>
+  <div class="ia-hint" id="cHint">Carica file dati per attivare</div>
   <div class="ia-inp-row">
     <input class="ia-inp" id="cInp"
       placeholder="Ask about pipeline evolution..."
@@ -1068,7 +1068,7 @@ function countUp(el, endVal, duration=700){
 let sbCurrentPanel='';
 function sbToggle(panel){
   const sp=document.getElementById('sbPanel');
-  const titles={data:'Data Pipeline',mapping:'Column Mapping',api:'API Config',legend:'Period Legend'};
+  const titles={data:'Dati',mapping:'Mappatura colonne',api:'Config. API',legend:'Legenda periodi'};
   // Deactivate all icons
   ['icoData','icoMap','icoApi','icoLgd'].forEach(id=>{
     const el=document.getElementById(id);
@@ -1129,7 +1129,7 @@ const FAM_COLORS = {
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
 const S = {
-  apiKey:'', periods:[], mapping:{id:null,deal:null,company:null,prob:null,value:null,arr:null,agent:null,famiglia:null},
+  apiKey:'', periodi:[], mapping:{id:null,deal:null,company:null,prob:null,value:null,arr:null,agent:null,famiglia:null},
   tracked:[], messages:[], isLoading:false, chatOpen:false,
   allDelta:[], charts:{slope:null,pipeline:null,bucket:null,fam:null,top:null,status:null,arr:null,probLine:null}
 };
@@ -1177,12 +1177,12 @@ function loadOneFile(file) {
       if(!data.length){toast('File vuoto','w');return;}
       const headers = Object.keys(data[0]);
       const label = guessLabel(file.name);
-      const color = PERIOD_COLORS[S.periods.length % PERIOD_COLORS.length];
+      const color = PERIOD_COLORS[S.periodi.length % PERIOD_COLORS.length];
       const pid = 'p'+Date.now()+Math.random().toString(36).slice(2,5);
-      S.periods.push({id:pid, file:file.name, label, data, headers, color, rows:data.length});
-      S.periods.sort((a,b)=>labelToDate(a.label)-labelToDate(b.label));
+      S.periodi.push({id:pid, file:file.name, label, data, headers, color, rows:data.length});
+      S.periodi.sort((a,b)=>labelToDate(a.label)-labelToDate(b.label));
       // Auto-detect mapping from first period
-      if(S.periods.length===1) {
+      if(S.periodi.length===1) {
         const detected = detectElysseMapping(headers);
         Object.assign(S.mapping, detected);
       }
@@ -1231,7 +1231,7 @@ function guessLabel(filename) {
       return `${MONTHS_IT[i]} ${ym?ym[0]:'2026'}`;
     }
   }
-  return `Periodo ${S.periods.length+1}`;
+  return `Periodo ${S.periodi.length+1}`;
 }
 
 function renderSidebar() {
@@ -1239,9 +1239,9 @@ function renderSidebar() {
   const fl = document.getElementById('fileList');
   fl.innerHTML='';
   const periodLabels = ['P1','P2','P3','P4','P5','P6'];
-  S.periods.forEach((p, idx)=>{
+  S.periodi.forEach((p, idx)=>{
     const label = periodLabels[idx] || `P${idx+1}`;
-    const isLast = idx === S.periods.length - 1;
+    const isLast = idx === S.periodi.length - 1;
     const zone = document.createElement('div');
     zone.className = 'period-zone' + (isLast ? ' active' : '');
     const fname = p.file.length > 22 ? p.file.slice(0,22)+'…' : p.file;
@@ -1257,13 +1257,13 @@ function renderSidebar() {
   });
 
   // Periods chip
-  const pc=document.getElementById('periodsChip');
-  pc.className='chip '+(S.periods.length>1?'ok':'warn');
-  pc.innerHTML=`<div class="cdot ${S.periods.length>1?'pulse':''}"></div>${S.periods.length} Period${S.periods.length!==1?'s':'o'}`;
+  const pc=document.getElementById('periodiChip');
+  pc.className='chip '+(S.periodi.length>1?'ok':'warn');
+  pc.innerHTML=`<div class="cdot ${S.periodi.length>1?'pulse':''}"></div>${S.periodi.length} Period${S.periodi.length!==1?'s':'o'}`;
 
   // Legend
   const leg=document.getElementById('legendItems');
-  leg.innerHTML=S.periods.map((p,i)=>`
+  leg.innerHTML=S.periodi.map((p,i)=>`
     <div class="sb-legend-row">
       <div class="sb-legend-dot" style="background:${p.color};"></div>
       <div class="sb-legend-label">${periodLabels[i]||'P'+(i+1)}</div>
@@ -1271,13 +1271,13 @@ function renderSidebar() {
     </div>`).join('');
 
   // Column mapping UI
-  const allH=[...new Set(S.periods.flatMap(p=>p.headers))];
-  const isElys=S.periods.some(p=>isElysseFormat(p.headers));
+  const allH=[...new Set(S.periodi.flatMap(p=>p.headers))];
+  const isElys=S.periodi.some(p=>isElysseFormat(p.headers));
   document.getElementById('autoDetectBadge').style.display=isElys?'':'none';
   const _cms=document.getElementById('colMapSec')||document.getElementById('panelMapping');
-  if(_cms) _cms.style.display=S.periods.length?'':'none';
+  if(_cms) _cms.style.display=S.periodi.length?'':'none';
   const _legs=document.getElementById('legendSec')||document.getElementById('panelLegend');
-  if(_legs) _legs.style.display=S.periods.length?'':'none';
+  if(_legs) _legs.style.display=S.periodi.length?'':'none';
   const fields=[
     {k:'id',lbl:'ID'},
     {k:'deal',lbl:'Deal'},
@@ -1312,12 +1312,12 @@ function renderSidebar() {
 }
 
 function relabel(id,lbl){
-  const p=S.periods.find(x=>x.id===id);
+  const p=S.periodi.find(x=>x.id===id);
   if(p){p.label=lbl;renderSidebar();buildComparison();}
 }
 function removePeriod(id){
-  S.periods=S.periods.filter(x=>x.id!==id);
-  if(!S.periods.length){document.getElementById('emptyState').style.display='flex';document.getElementById('dashArea').style.display='none';}
+  S.periodi=S.periodi.filter(x=>x.id!==id);
+  if(!S.periodi.length){document.getElementById('emptyState').style.display='flex';document.getElementById('dashArea').style.display='none';}
   renderSidebar();
   buildComparison();
 }
@@ -1328,7 +1328,7 @@ function normKey(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,' '
 function matchDeals() {
   const dealMap = {}; // key → {display, entries:{pi→{prob,value,arr,agent,famiglia}}}
 
-  S.periods.forEach((p,pi) => {
+  S.periodi.forEach((p,pi) => {
     // Resolve column names per-period (handles different names across files)
     const ph = p.headers;
     const resolveCol = (mapped, fallbacks) => {
@@ -1349,9 +1349,12 @@ function matchDeals() {
       const idVal = idCol ? String(row[idCol]||'').trim() : '';
       // Fallback key: nome+company normalized
       const nameVal = dealCol ? String(row[dealCol]||'') : '';
-      const compVal = companyCol ? String(row[companyCol]||'') : '';
-      const key = idVal || normKey(nameVal) || normKey(compVal);
-      if(!key || key==='nessun valore' || key==='none') return;
+      const rawComp = companyCol ? String(row[companyCol]||'').trim() : '';
+      // Sanifica i placeholder di HubSpot: "(Nessun valore)", "0", "0.0", ecc.
+      const COMP_PLACEHOLDERS = ['(nessun valore)','nessun valore','0.0','0','none','null','-','—'];
+      const compVal = COMP_PLACEHOLDERS.includes(rawComp.toLowerCase()) ? '' : rawComp;
+      const key = idVal || normKey(nameVal) || normKey(rawComp);
+      if(!key || key==='nessun valore' || key==='none' || key==='0' || key==='0 0') return;
 
       if(!dealMap[key]) {
         dealMap[key] = {
@@ -1394,7 +1397,7 @@ function matchDeals() {
   });
 
   S.tracked = Object.entries(dealMap).map(([key,d])=>{
-    const pdata = S.periods.map((_,i)=>({...d.entries[i]||{prob:null,value:null,arr:null,agent:null,famiglia:null}}));
+    const pdata = S.periodi.map((_,i)=>({...d.entries[i]||{prob:null,value:null,arr:null,agent:null,famiglia:null}}));
     const present = pdata.filter(x=>x.prob!==null);
     if(!present.length) return null;
     const first=present[0]; const last=present[present.length-1];
@@ -1403,7 +1406,7 @@ function matchDeals() {
     const latestVal = [...pdata].reverse().find(x=>x.value!=null)?.value||null;
     const latestArr = [...pdata].reverse().find(x=>x.arr!=null)?.arr||null;
     const latestFam = [...pdata].reverse().find(x=>x.famiglia)?.famiglia||null;
-    const inLatest = pdata[S.periods.length-1]?.prob!=null;
+    const inLatest = pdata[S.periodi.length-1]?.prob!=null;
     const inFirst  = pdata[0]?.prob!=null;
     let status='stable';
     if(!inFirst&&inLatest) status='new';
@@ -1424,7 +1427,7 @@ function matchDeals() {
 
 // ─── BUILD DASHBOARD ─────────────────────────────────────────────────────────
 function buildComparison(){
-  if(!S.periods.length) return;
+  if(!S.periodi.length) return;
   matchDeals();
   buildInsightBanner();
   buildKPIs();
@@ -1435,14 +1438,14 @@ function buildComparison(){
 
 // ─── INSIGHT BANNER ───────────────────────────────────────────────────────────
 function buildInsightBanner(){
-  if(S.periods.length<2){document.getElementById('insightBanner').style.display='none';return;}
+  if(S.periodi.length<2){document.getElementById('insightBanner').style.display='none';return;}
   const b=document.getElementById('insightBanner');
   b.style.display='block';
   const nUp   = S.tracked.filter(d=>d.status==='up').length;
   const nDown = S.tracked.filter(d=>d.status==='down').length;
   const nNew  = S.tracked.filter(d=>d.status==='new').length;
   const nLost = S.tracked.filter(d=>d.status==='lost').length;
-  const lastIdx = S.periods.length-1;
+  const lastIdx = S.periodi.length-1;
   const prevIdx = lastIdx-1;
   const lastVal = S.tracked.reduce((a,d)=>a+(d.pdata[lastIdx]?.value||0),0);
   const prevVal = S.tracked.reduce((a,d)=>a+(d.pdata[prevIdx]?.value||0),0);
@@ -1455,7 +1458,7 @@ function buildInsightBanner(){
 
   b.innerHTML=`
     <div class="ib-head">
-      <span class="ib-title">Pipeline ${S.periods[prevIdx].label} → ${S.periods[lastIdx].label}</span>
+      <span class="ib-title">Pipeline ${S.periodi[prevIdx].label} → ${S.periodi[lastIdx].label}</span>
       <div class="ib-delta">
         <span class="ib-delta-val" style="color:${isPos?posC:negC};">${isPos?'+':''}${fmtM(deltaVal)}</span>
         ${pctChange?`<span class="ib-delta-pct" style="color:${isPos?posC:negC};background:${isPos?'rgba(5,150,105,.08)':'rgba(220,53,85,.08)'};">${isPos?'+':''}${pctChange}%</span>`:''}
@@ -1525,14 +1528,14 @@ function buildKPIs(){
 // ─── PIPELINE CHART ───────────────────────────────────────────────────────────
 function buildPipelineChart(){
   if(S.charts.pipeline) S.charts.pipeline.destroy();
-  const labels=S.periods.map(p=>p.label);
-  const vals=S.periods.map((_,i)=>S.tracked.reduce((a,d)=>a+(d.pdata[i]?.value||0),0));
-  const arrs=S.periods.map((_,i)=>S.tracked.reduce((a,d)=>a+(d.pdata[i]?.arr||0),0));
+  const labels=S.periodi.map(p=>p.label);
+  const vals=S.periodi.map((_,i)=>S.tracked.reduce((a,d)=>a+(d.pdata[i]?.value||0),0));
+  const arrs=S.periodi.map((_,i)=>S.tracked.reduce((a,d)=>a+(d.pdata[i]?.arr||0),0));
   const ctx=document.getElementById('pipelineChart').getContext('2d');
   S.charts.pipeline=new Chart(ctx,{type:'bar',data:{labels,
     datasets:[
-      {label:'Importo totale',data:vals,backgroundColor:S.periods.map(p=>p.color+'aa'),borderRadius:4,borderWidth:0},
-      {label:'ARR anno corrente',data:arrs,backgroundColor:S.periods.map(p=>p.color+'44'),borderRadius:2,borderWidth:0}
+      {label:'Importo totale',data:vals,backgroundColor:S.periodi.map(p=>p.color+'aa'),borderRadius:4,borderWidth:0},
+      {label:'ARR anno corrente',data:arrs,backgroundColor:S.periodi.map(p=>p.color+'44'),borderRadius:2,borderWidth:0}
     ]},options:darkBar({stacked:false,legend:true})});
 }
 
@@ -1540,8 +1543,8 @@ function buildPipelineChart(){
 function buildBucketChart(){
   if(S.charts.bucket) S.charts.bucket.destroy();
   const labels=PROB_BUCKETS.map(b=>b.label);
-  const ds=S.periods.map(p=>{
-    const pi=S.periods.indexOf(p);
+  const ds=S.periodi.map(p=>{
+    const pi=S.periodi.indexOf(p);
     const data=PROB_BUCKETS.map(b=>S.tracked.filter(d=>{const prob=d.pdata[pi]?.prob;return prob!=null&&prob>=b.min&&prob<b.max;}).length);
     return{label:p.label,data,backgroundColor:p.color+'99',borderColor:p.color,borderWidth:1,borderRadius:3};
   });
@@ -1552,7 +1555,7 @@ function buildBucketChart(){
 // ─── FAMIGLIA CHART ───────────────────────────────────────────────────────────
 function buildFamChart(){
   if(S.charts.fam) S.charts.fam.destroy();
-  const lastIdx=S.periods.length-1;
+  const lastIdx=S.periodi.length-1;
   const famCount={};
   S.tracked.forEach(d=>{
     if(d.pdata[lastIdx]?.prob==null) return;
@@ -1573,7 +1576,7 @@ function buildFamChart(){
 // ─── TOP DEALS CHART ──────────────────────────────────────────────────────────
 function buildTopChart(){
   if(S.charts.top) S.charts.top.destroy();
-  const lastIdx=S.periods.length-1;
+  const lastIdx=S.periodi.length-1;
   const top=S.tracked.filter(d=>d.pdata[lastIdx]?.value>0)
     .sort((a,b)=>(b.pdata[lastIdx]?.value||0)-(a.pdata[lastIdx]?.value||0)).slice(0,10);
   const labels=top.map(d=>(d.companyName||d.displayName).slice(0,22));
@@ -1604,9 +1607,9 @@ function buildStatusChart(){
 function buildArrChart(){
   if(S.charts.arr) S.charts.arr.destroy();
   const agents=[...new Set(S.tracked.map(d=>d.agent).filter(Boolean))].sort();
-  const lastIdx=S.periods.length-1;
-  const ds=S.periods.map(p=>{
-    const pi=S.periods.indexOf(p);
+  const lastIdx=S.periodi.length-1;
+  const ds=S.periodi.map(p=>{
+    const pi=S.periodi.indexOf(p);
     const data=agents.map(a=>S.tracked.filter(d=>d.agent===a&&d.pdata[pi]?.arr!=null).reduce((s,d)=>s+(d.pdata[pi]?.arr||0),0));
     return{label:p.label,data,backgroundColor:p.color+'99',borderColor:p.color,borderWidth:1,borderRadius:3};
   });
@@ -1619,7 +1622,7 @@ function buildProbLineChart(){ buildProbHeatmap(); }
 function buildProbHeatmap(){
   const el=document.getElementById('probHeatmap');
   if(!el) return;
-  if(S.periods.length<1){el.innerHTML='<p style="color:#6a90b0;padding:16px;font-size:12px;">Carica almeno un periodo per visualizzare la matrice.</p>';return;}
+  if(S.periodi.length<1){el.innerHTML='<p style="color:#6a90b0;padding:16px;font-size:12px;">Carica almeno un periodo per visualizzare la matrice.</p>';return;}
   const LEVELS=[
     {label:'100%',min:0.975,max:1.01, color:'#00C8FF'},
     {label:'95%', min:0.925,max:0.975,color:'#4a9fd4'},
@@ -1629,10 +1632,10 @@ function buildProbHeatmap(){
     {label:'60%', min:0.55, max:0.65, color:'#9b7ef8'},
     {label:'50%', min:0.45, max:0.55, color:'#f472b6'},
   ];
-  const lastIdx = S.periods.length - 1;
+  const lastIdx = S.periodi.length - 1;
 
   const matrix=LEVELS.map(lv=>
-    S.periods.map((_,pi)=>{
+    S.periodi.map((_,pi)=>{
       let total=0,count=0;
       S.tracked.forEach(d=>{
         const prob=d.pdata[pi]?.prob;
@@ -1646,9 +1649,9 @@ function buildProbHeatmap(){
   // Build <table>
   let html=`<table class="him-table">
     <thead><tr>
-      <th class="him-th" style="text-align:left;padding-left:16px;min-width:120px;">TIER / PROB</th>
-      ${S.periods.map((p,pi)=>{
-        const isLast=pi===lastIdx&&S.periods.length>1;
+      <th class="him-th" style="text-align:left;padding-left:16px;min-width:120px;">FASCIA / PROB</th>
+      ${S.periodi.map((p,pi)=>{
+        const isLast=pi===lastIdx&&S.periodi.length>1;
         return `<th class="him-th">${p.label}${isLast?` <span class="him-delta-tag">DELTA</span>`:''}`;
       }).join('</th>')}
       </th>
@@ -1664,7 +1667,7 @@ function buildProbHeatmap(){
         </div>
       </td>`;
     matrix[li].forEach((cell,pi)=>{
-      const isLast=pi===lastIdx&&S.periods.length>1;
+      const isLast=pi===lastIdx&&S.periodi.length>1;
       const prev=pi>0?matrix[li][pi-1]:null;
       // Delta % for last column
       let deltaHtml='';
@@ -1692,10 +1695,10 @@ function buildProbHeatmap(){
 
   // TOTALE row
   html+='<tr class="him-total-row"><td class="him-td" style="border-left:none;"><div class="him-label-cell" style="padding:0;"><span class="him-prob-text" style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#FDFDFD;">TOTALE</span></div></td>';
-  S.periods.forEach((_,pi)=>{
+  S.periodi.forEach((_,pi)=>{
     const tot=matrix.reduce((s,row)=>s+row[pi].total,0);
     const cnt=matrix.reduce((s,row)=>s+row[pi].count,0);
-    const isLast=pi===lastIdx&&S.periods.length>1;
+    const isLast=pi===lastIdx&&S.periodi.length>1;
     let deltaHtml='';
     if(isLast&&pi>0){
       const prev=matrix.reduce((s,row)=>s+row[pi-1].total,0);
@@ -1757,7 +1760,7 @@ function renderDeltaTable(rows){
   const famTag=(f)=>{if(!f||f==='0') return '';const c=FAM_COLORS[f]||'rgba(255,255,255,.1)';return `<span class="fam-tag" style="background:${c.replace('.7','.12').replace('.6','.1')};color:${c.replace('rgba','').replace(/[0-9.]+\)$/,'1)').replace(/\(|\)/g,'').split(',').slice(0,3).join(',')};">${f.slice(0,14)}</span>`;}
   t.innerHTML=`<thead><tr>
     <th>Deal / Azienda</th><th>Agente</th>
-    ${S.periods.map(p=>`<th style="color:${p.color};">${p.label}</th>`).join('')}
+    ${S.periodi.map(p=>`<th style="color:${p.color};">${p.label}</th>`).join('')}
     <th>Δpp</th><th>€ Importo</th><th>€ ARR</th><th>Famiglia</th><th>Stato</th>
   </tr></thead>
   <tbody>${rows.map(d=>{
@@ -1824,20 +1827,20 @@ function setApiKey(val){
   enableChat();
 }
 function enableChat(){
-  const ok=!!S.apiKey&&S.periods.length>0;
+  const ok=!!S.apiKey&&S.periodi.length>0;
   const inp=document.getElementById('cInp');
   const btn=document.getElementById('sBtn');
   const hint=document.getElementById('cHint');
-  if(inp) inp.disabled=!S.periods.length;
+  if(inp) inp.disabled=!S.periodi.length;
   if(btn) btn.disabled=!ok;
-  if(hint) hint.textContent=!S.periods.length?'Load data files to activate':!S.apiKey?'Add API key to chat':'↵ Press Enter to send';
+  if(hint) hint.textContent=!S.periodi.length?'Carica file dati per attivare':!S.apiKey?'Add API key to chat':'↵ Press Enter to send';
   if(hint) hint.style.display=ok?'none':'block';
 }
 function toggleChat(){ toggleIA(); }
 function sendChat(){
   const inp=document.getElementById('cInp');
   const text=inp.value.trim();
-  if(!text||S.isLoading||!S.apiKey||!S.periods.length) return;
+  if(!text||S.isLoading||!S.apiKey||!S.periodi.length) return;
   S.chatOpen=true;
   const iaP=document.getElementById('iaPanel');
   if(iaP&&iaP.classList.contains('hidden'))toggleIA();
@@ -1850,7 +1853,7 @@ function sendChat(){
 }
 
 async function callAI(userMsg){
-  const psum=S.periods.map((p,i)=>{
+  const psum=S.periodi.map((p,i)=>{
     const ds=S.tracked.filter(d=>d.pdata[i]?.prob!=null);
     const tv=ds.reduce((a,d)=>a+(d.pdata[i]?.value||0),0);
     const ta=ds.reduce((a,d)=>a+(d.pdata[i]?.arr||0),0);
@@ -1866,14 +1869,14 @@ async function callAI(userMsg){
   const lostDeals=S.tracked.filter(d=>d.status==='lost').slice(0,10)
     .map(d=>`${d.companyName||d.displayName} (${d.agent?.split(' ').pop()}) · €${fmtM(d.value)}`).join('\n');
   // Full CSV snapshot
-  const csv=['Deal,Company,Agente,Famiglia,'+S.periods.map(p=>p.label+'_prob').join(',')+','+S.periods.map(p=>p.label+'_importo').join(',')+',Δpp,Stato',
+  const csv=['Deal,Company,Agente,Famiglia,'+S.periodi.map(p=>p.label+'_prob').join(',')+','+S.periodi.map(p=>p.label+'_importo').join(',')+',Δpp,Stato',
     ...S.tracked.slice(0,250).map(d=>`"${d.displayName.replace(/"/g,'')}","${d.companyName}","${d.agent||''}","${d.famiglia||''}",`+
       d.pdata.map(p=>p.prob!=null?(p.prob*100).toFixed(0):'').join(',')+','+
       d.pdata.map(p=>p.value||0).join(',')+','+
       (d.deltaProb!=null?Math.round(d.deltaProb*100):'')+','+d.status)
   ].join('\n');
 
-  const system=`Sei un analista commerciale senior di Ellysse. Analisi multi-periodo pipeline su ${S.periods.length} periodi.
+  const system=`Sei un analista commerciale senior di Ellysse. Analisi multi-periodo pipeline su ${S.periodi.length} periodi.
 
 RIEPILOGO PER PERIODO:
 ${psum}
@@ -1924,7 +1927,7 @@ function rmMsg(id){const e=document.getElementById(id);if(e)e.remove();}
 // ─── EXPORT ───────────────────────────────────────────────────────────────────
 function exportReport(){
   if(!S.tracked.length){toast('Nessun dato','w');return;}
-  const hdr=['Deal','Company','Agente','Famiglia','Importo','ARR',...S.periods.map(p=>p.label),'Δpp','Stato'];
+  const hdr=['Deal','Company','Agente','Famiglia','Importo','ARR',...S.periodi.map(p=>p.label),'Δpp','Stato'];
   const rows=S.tracked.map(d=>[
     d.displayName,d.companyName,d.agent||'',d.famiglia||'',d.value||0,d.arr||0,
     ...d.pdata.map(p=>p.prob!=null?Math.round(p.prob*100)+'%':''),
