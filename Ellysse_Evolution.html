@@ -999,6 +999,16 @@ header::after{
         </div>
       </div>
 
+      <!-- TREND LINEARE PER FASCIA DI PROBABILITÀ -->
+      <div class="cc" style="margin-bottom:13px;" id="trendSection">
+        <div class="cc-title" style="font-size:10px;">
+          📈 Evoluzione Pipeline per Fascia di Probabilità
+        </div>
+        <div style="padding:4px 0 0;">
+          <canvas id="trendChart" height="90"></canvas>
+        </div>
+      </div>
+
       <!-- HERO: Tracciamento deal periodo per periodo -->
       <div class="cc" style="margin-bottom:11px;">
         <div class="cc-title" style="font-size:10px;">
@@ -1126,6 +1136,17 @@ const PROB_BUCKETS = [
   {label:'41–60%',min:.41,max:.61},{label:'61–80%',min:.61,max:.81},
   {label:'81–100%',min:.81,max:1.01}
 ];
+
+// Fasce per il grafico di trend lineare (matching immagine desiderata)
+const TREND_LINES = [
+  {label:'100%',  min:1.0,  max:1.01, color:'#1565C0'},
+  {label:'90–99%',min:0.9,  max:1.0,  color:'#C62828'},
+  {label:'80–89%',min:0.8,  max:0.9,  color:'#2E7D32'},
+  {label:'70–79%',min:0.7,  max:0.8,  color:'#F9A825'},
+  {label:'60–69%',min:0.6,  max:0.7,  color:'#E65100'},
+  {label:'50–59%',min:0.5,  max:0.6,  color:'#6A1B9A'},
+  {label:'40–49%',min:0.4,  max:0.5,  color:'#00695C'},
+];
 const FAM_COLORS = {
   'TIM offerta AICA':'rgba(0,200,255,.7)','On Prem':'rgba(74,159,212,.7)',
   'Cloud':'rgba(0,230,118,.7)','Tim on prem':'rgba(74,159,212,.5)',
@@ -1136,7 +1157,7 @@ const FAM_COLORS = {
 const S = {
   apiKey:'', periodi:[], mapping:{id:null,deal:null,company:null,prob:null,value:null,arr:null,agent:null,famiglia:null},
   tracked:[], messages:[], isLoading:false, chatOpen:false,
-  allDelta:[], charts:{slope:null,pipeline:null,bucket:null,fam:null,top:null,status:null,arr:null,probLine:null}
+  allDelta:[], charts:{slope:null,pipeline:null,bucket:null,fam:null,top:null,status:null,arr:null,probLine:null,trend:null}
 };
 
 // ─── ELLYSSE AUTO-DETECT ──────────────────────────────────────────────────────
@@ -1438,6 +1459,7 @@ function buildComparison(){
   buildKPIs();
   buildDeltaTable();
   buildProbLineChart();
+  buildTrendChart();
   buildQuickChipsAI();
 }
 
@@ -1548,6 +1570,97 @@ function buildKPIs(){
 }
 
 // ─── PIPELINE CHART ───────────────────────────────────────────────────────────
+// ─── TREND LINEARE PER FASCIA DI PROBABILITÀ ──────────────────────────────────
+function buildTrendChart(){
+  const sec = document.getElementById('trendSection');
+  if(S.periodi.length < 2){ if(sec) sec.style.display='none'; return; }
+  if(sec) sec.style.display='';
+
+  if(S.charts.trend){ S.charts.trend.destroy(); S.charts.trend=null; }
+
+  const labels = S.periodi.map(p=>p.label);
+
+  // Per ogni fascia calcola la somma del valore per periodo
+  const datasets = TREND_LINES.map(t=>{
+    const data = S.periodi.map((_,pi)=>{
+      return S.tracked.reduce((sum,d)=>{
+        const prob = d.pdata[pi]?.prob;
+        const val  = d.pdata[pi]?.value || 0;
+        if(prob!=null && prob>=t.min && prob<t.max) return sum+val;
+        return sum;
+      },0);
+    });
+    // Mostra solo se almeno un periodo ha dati non zero
+    const hasData = data.some(v=>v>0);
+    return {
+      label: t.label+' – Totale deal',
+      data,
+      borderColor: t.color,
+      backgroundColor: t.color+'22',
+      borderWidth: 2.5,
+      pointRadius: 5,
+      pointHoverRadius: 7,
+      pointBackgroundColor: t.color,
+      tension: 0.35,
+      fill: false,
+      hidden: !hasData,
+    };
+  });
+
+  // Calcola il max per arrotondare a step 50k
+  const allVals = datasets.flatMap(d=>d.data);
+  const maxVal  = Math.max(...allVals, 50000);
+  const yMax    = Math.ceil(maxVal/50000)*50000 + 50000;
+
+  const ctx = document.getElementById('trendChart').getContext('2d');
+  S.charts.trend = new Chart(ctx,{
+    type:'line',
+    data:{ labels, datasets },
+    options:{
+      responsive:true,
+      maintainAspectRatio:true,
+      interaction:{ mode:'index', intersect:false },
+      plugins:{
+        legend:{
+          display:true,
+          position:'right',
+          labels:{
+            font:{ family:"'IBM Plex Mono',monospace", size:10 },
+            color:'#3a6490',
+            padding:10,
+            boxWidth:14,
+            usePointStyle:true,
+          }
+        },
+        tooltip:{
+          callbacks:{
+            label:ctx=>`${ctx.dataset.label}: €${Math.round(ctx.parsed.y).toLocaleString('it-IT')}`
+          }
+        }
+      },
+      scales:{
+        x:{
+          grid:{ color:'rgba(9,56,102,.06)' },
+          ticks:{ font:{family:"'Montserrat',sans-serif",size:10,weight:'600'}, color:'#093866' }
+        },
+        y:{
+          min:0,
+          max:yMax,
+          beginAtZero:true,
+          ticks:{
+            stepSize:50000,
+            maxTicksLimit:30,
+            font:{family:"'IBM Plex Mono',monospace",size:9},
+            color:'#6a90b0',
+            callback:v=>v===0?'0':'€'+( v>=1000000?(v/1000000).toFixed(1)+'M':(v/1000)+'k' )
+          },
+          grid:{ color:'rgba(9,56,102,.07)' }
+        }
+      }
+    }
+  });
+}
+
 function buildPipelineChart(){
   if(S.charts.pipeline) S.charts.pipeline.destroy();
   const labels=S.periodi.map(p=>p.label);
