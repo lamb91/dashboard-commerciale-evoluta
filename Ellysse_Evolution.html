@@ -1950,6 +1950,7 @@ function buildQuickChipsAI(){
     'Quali deal ad alto valore sono a rischio?',
   ];
   c.innerHTML=chips.map(s=>`<div class="qchip" onclick="useChip(this)">${s}</div>`).join('');
+  c.style.display='flex';
 }
 function useChip(el){document.getElementById('cInp').value=el.textContent;document.getElementById('cInp').focus();}
 
@@ -2047,12 +2048,17 @@ ISTRUZIONI: Italiano, professionale, sintetico. Tabelle markdown per confronti. 
 
 function addMsg(role,content){
   const h=document.getElementById('chatHist');
+  // Rendi visibile la cronologia al primo messaggio
+  if(h.style.display==='none'||!h.style.display) h.style.removeProperty('display');
+  const hint=document.getElementById('cHint');
+  if(hint) hint.style.display='none';
   const d=document.createElement('div');d.className=`cmsg ${role}`;
   d.innerHTML=`<div class="cavatar">${role==='user'?'👤':'🤖'}</div><div class="cbubble">${role==='ai'?renderMd(content):esc(content).replace(/\n/g,'<br>')}</div>`;
   h.appendChild(d);h.scrollTop=h.scrollHeight;return d;
 }
 function addTyping(){
   const h=document.getElementById('chatHist');
+  if(h.style.display==='none'||!h.style.display) h.style.removeProperty('display');
   const id='t'+Date.now();const d=document.createElement('div');d.id=id;d.className='cmsg ai';
   d.innerHTML=`<div class="cavatar">🤖</div><div class="cbubble"><div class="typing-d"><div class="td-dot"></div><div class="td-dot"></div><div class="td-dot"></div></div></div>`;
   h.appendChild(d);h.scrollTop=h.scrollHeight;return id;
