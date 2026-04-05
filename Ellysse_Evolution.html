@@ -1233,8 +1233,10 @@ function renderSidebar() {
   const allH=[...new Set(S.periods.flatMap(p=>p.headers))];
   const isElys=S.periods.some(p=>isElysseFormat(p.headers));
   document.getElementById('autoDetectBadge').style.display=isElys?'':'none';
-  document.getElementById('colMapSec').style.display=S.periods.length?'':'none';
-  document.getElementById('legendSec').style.display=S.periods.length?'':'none';
+  const _cms=document.getElementById('colMapSec')||document.getElementById('panelMapping');
+  if(_cms) _cms.style.display=S.periods.length?'':'none';
+  const _legs=document.getElementById('legendSec')||document.getElementById('panelLegend');
+  if(_legs) _legs.style.display=S.periods.length?'':'none';
   const fields=[
     {k:'id',lbl:'ID'},
     {k:'deal',lbl:'Deal'},
