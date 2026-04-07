@@ -572,12 +572,19 @@ function renderChart(grid, cfg) {
 
 const COLORS={text:'#e8edf5',text2:'#8a9ab8',text3:'#6a90b0'};
 
+// Sanitizza i placeholder HubSpot (export IT/EN)
+const HUB_PLACEHOLDERS = ['(nessun valore)','nessun valore','0.0','0','none','null','-','—','n/a',''];
+function sanitizeLabel(raw){
+  const s = String(raw||'').trim();
+  return HUB_PLACEHOLDERS.includes(s.toLowerCase()) ? 'Non assegnato' : s;
+}
+
 function renderBarCat(canvas,cfg,opts) {
   const {catCol,numCol}=cfg;
   // Aggregate: sum numCol by catCol
   const agg={};
   S.data.forEach(row=>{
-    const k=String(row[catCol.h]||'N/D');
+    const k=sanitizeLabel(row[catCol.h]);
     const v=parseFloat(String(row[numCol.h]||0).replace(/[€$£\s%,]/g,''))||0;
     agg[k]=(agg[k]||0)+v;
   });
@@ -611,7 +618,7 @@ function renderPie(canvas,cfg) {
   const {catCol}=cfg;
   const agg={};
   S.data.forEach(row=>{
-    const k=String(row[catCol.h]||'N/D');
+    const k=sanitizeLabel(row[catCol.h]);
     agg[k]=(agg[k]||0)+1;
   });
   const sorted=Object.entries(agg).sort((a,b)=>b[1]-a[1]).slice(0,12);
