@@ -1052,7 +1052,7 @@ header::after{
   <div class="ia-hint" id="cHint">Carica file dati per attivare</div>
   <div class="ia-inp-row">
     <input class="ia-inp" id="cInp"
-      placeholder="Ask about pipeline evolution..."
+      placeholder="Fai una domanda sulla pipeline..."
       disabled onkeydown="if(event.key==='Enter'){event.preventDefault();sendChat();}"/>
     <button class="ia-send" id="sBtn" onclick="sendChat()" disabled>→</button>
   </div>
@@ -1199,7 +1199,7 @@ function loadOneFile(file) {
       if(ext==='csv') wb=XLSX.read(e.target.result,{type:'string'});
       else wb=XLSX.read(e.target.result,{type:'array'});
       const ws = wb.Sheets[wb.SheetNames[0]];
-      const data = XLSX.utils.sheet_to_json(ws,{defval:''});
+      const data = XLSX.utils.sheet_to_json(ws,{defval:'', raw:true});
       if(!data.length){toast('File vuoto','w');return;}
       const headers = Object.keys(data[0]);
       const label = guessLabel(file.name);
@@ -1415,9 +1415,12 @@ function matchDeals() {
         const ex=dealMap[key].entries[pi];
         if(value!=null) ex.value=(ex.value||0)+value;
         if(arr!=null) ex.arr=(ex.arr||0)+arr;
-        if(prob!=null) ex.prob=(ex.prob+prob)/2;
+        if(prob!=null){
+          ex._pCount=(ex._pCount||1)+1;
+          ex.prob=ex.prob+(prob-ex.prob)/ex._pCount; // running mean
+        }
       } else {
-        dealMap[key].entries[pi]={prob,value,arr,agent,famiglia};
+        dealMap[key].entries[pi]={prob,value,arr,agent,famiglia,_pCount:1};
       }
     });
   });
@@ -1969,7 +1972,7 @@ function enableChat(){
   const hint=document.getElementById('cHint');
   if(inp) inp.disabled=!S.periodi.length;
   if(btn) btn.disabled=!ok;
-  if(hint) hint.textContent=!S.periodi.length?'Carica file dati per attivare':!S.apiKey?'Add API key to chat':'↵ Press Enter to send';
+  if(hint) hint.textContent=!S.periodi.length?'Carica file dati per attivare':!S.apiKey?'Inserisci la chiave API nel pannello Config. API →':'↵ Invio per inviare';
   if(hint) hint.style.display=ok?'none':'block';
 }
 function toggleChat(){ toggleIA(); }
@@ -1989,60 +1992,103 @@ function sendChat(){
 }
 
 async function callAI(userMsg){
+  const lastIdx=S.periodi.length-1;
+  const lastLabel=S.periodi[lastIdx]?.label||'ultimo periodo';
+
+  // ─── Riepilogo per periodo ─────────────────────────────────────────────
   const psum=S.periodi.map((p,i)=>{
     const ds=S.tracked.filter(d=>d.pdata[i]?.prob!=null);
     const tv=ds.reduce((a,d)=>a+(d.pdata[i]?.value||0),0);
-    const ta=ds.reduce((a,d)=>a+(d.pdata[i]?.arr||0),0);
     const ap=ds.length?ds.reduce((a,d)=>a+(d.pdata[i]?.prob||0),0)/ds.length:0;
-    return `${p.label}: ${ds.length} deal · pipeline ${fmtM(tv)} · ARR ${fmtM(ta)} · prob.media ${(ap*100).toFixed(1)}%`;
+    return `${p.label}: ${ds.length} deal · pipeline ${fmtM(tv)} · prob.media ${(ap*100).toFixed(1)}%`;
   }).join('\n');
-  const upDeals=S.tracked.filter(d=>d.status==='up').sort((a,b)=>b.deltaProb-a.deltaProb).slice(0,12)
-    .map(d=>`${d.companyName||d.displayName} (${d.agent?.split(' ').pop()}) +${Math.round(d.deltaProb*100)}pp · €${fmtM(d.value)}`).join('\n');
-  const downDeals=S.tracked.filter(d=>d.status==='down').sort((a,b)=>a.deltaProb-b.deltaProb).slice(0,12)
-    .map(d=>`${d.companyName||d.displayName} (${d.agent?.split(' ').pop()}) ${Math.round(d.deltaProb*100)}pp · €${fmtM(d.value)}`).join('\n');
-  const newDeals=S.tracked.filter(d=>d.status==='new').slice(0,15)
-    .map(d=>`${d.companyName||d.displayName} (${d.agent?.split(' ').pop()}) ${Math.round((d.pdata.find(p=>p.prob!=null)?.prob||0)*100)}% · €${fmtM(d.value)} · ${d.famiglia||''}`).join('\n');
-  const lostDeals=S.tracked.filter(d=>d.status==='lost').slice(0,10)
-    .map(d=>`${d.companyName||d.displayName} (${d.agent?.split(' ').pop()}) · €${fmtM(d.value)}`).join('\n');
-  // Full CSV snapshot
-  const csv=['Deal,Company,Agente,Famiglia,'+S.periodi.map(p=>p.label+'_prob').join(',')+','+S.periodi.map(p=>p.label+'_importo').join(',')+',Δpp,Stato',
-    ...S.tracked.slice(0,250).map(d=>`"${d.displayName.replace(/"/g,'')}","${d.companyName}","${d.agent||''}","${d.famiglia||''}",`+
-      d.pdata.map(p=>p.prob!=null?(p.prob*100).toFixed(0):'').join(',')+','+
-      d.pdata.map(p=>p.value||0).join(',')+','+
-      (d.deltaProb!=null?Math.round(d.deltaProb*100):'')+','+d.status)
-  ].join('\n');
 
-  const system=`Sei un analista commerciale senior di Ellysse. Analisi multi-periodo pipeline su ${S.periodi.length} periodi.
+  // ─── Pipeline per soglia di probabilità (ultimo periodo) ──────────────
+  const TIERS=[100,90,80,70,60,50,40];
+  const tierRows=TIERS.map(t=>{
+    const ds=S.tracked.filter(d=>{const p=d.pdata[lastIdx];return p?.prob!=null&&Math.round(p.prob*100)>=t;});
+    const tv=ds.reduce((a,d)=>a+(d.pdata[lastIdx]?.value||0),0);
+    return `≥${t}%: ${ds.length} deal · ${fmtM(tv)}`;
+  }).join('\n');
 
-RIEPILOGO PER PERIODO:
+  // ─── Per agente (ultimo periodo) ──────────────────────────────────────
+  const agMap={};
+  S.tracked.forEach(d=>{
+    const p=d.pdata[lastIdx];if(!p?.prob)return;
+    const ag=d.agent||'N/A';
+    if(!agMap[ag])agMap[ag]={n:0,v:0,prob:0};
+    agMap[ag].n++;agMap[ag].v+=p.value||0;agMap[ag].prob+=p.prob||0;
+  });
+  const agentRows=Object.entries(agMap).sort((a,b)=>b[1].v-a[1].v)
+    .map(([ag,r])=>`${ag}: ${r.n} deal · ${fmtM(r.v)} · prob.media ${(r.prob/r.n*100).toFixed(0)}%`).join('\n');
+
+  // ─── Per famiglia prodotto (ultimo periodo) ────────────────────────────
+  const famMap={};
+  S.tracked.forEach(d=>{
+    const p=d.pdata[lastIdx];if(!p?.prob)return;
+    const fam=d.famiglia||'Non classificato';
+    if(!famMap[fam])famMap[fam]={n:0,v:0};
+    famMap[fam].n++;famMap[fam].v+=p.value||0;
+  });
+  const famRows=Object.entries(famMap).sort((a,b)=>b[1].v-a[1].v)
+    .map(([fam,r])=>`${fam}: ${r.n} deal · ${fmtM(r.v)}`).join('\n');
+
+  // ─── Top movers ───────────────────────────────────────────────────────
+  const upDeals=S.tracked.filter(d=>d.status==='up').sort((a,b)=>b.deltaProb-a.deltaProb).slice(0,8)
+    .map(d=>`${d.companyName||d.displayName} (${d.agent?.split(' ').pop()||''}) +${Math.round(d.deltaProb*100)}pp · ${fmtM(d.value)}`).join('\n');
+  const downDeals=S.tracked.filter(d=>d.status==='down').sort((a,b)=>a.deltaProb-b.deltaProb).slice(0,8)
+    .map(d=>`${d.companyName||d.displayName} (${d.agent?.split(' ').pop()||''}) ${Math.round(d.deltaProb*100)}pp · ${fmtM(d.value)}`).join('\n');
+  const newDeals=S.tracked.filter(d=>d.status==='new').slice(0,10)
+    .map(d=>`${d.companyName||d.displayName} (${d.agent?.split(' ').pop()||''}) ${Math.round((d.pdata.find(p=>p?.prob!=null)?.prob||0)*100)}% · ${fmtM(d.value)} · ${d.famiglia||''}`).join('\n');
+  const lostDeals=S.tracked.filter(d=>d.status==='lost').slice(0,8)
+    .map(d=>`${d.companyName||d.displayName} · ${fmtM(d.value)}`).join('\n');
+
+  const system=`Sei un analista commerciale senior di Ellysse. Rispondi SEMPRE in italiano.
+
+REGOLE FONDAMENTALI (obbligatorie, non derogabili):
+1. Rispondi in massimo 3 frasi concise OPPURE un elenco puntato di massimo 6 voci.
+2. NON elencare mai deal singoli, a meno che l'utente non chieda esplicitamente di un'azienda specifica per nome.
+3. NON produrre tabelle markdown.
+4. Usa SOLO i dati pre-calcolati qui sotto — non fare calcoli autonomi, i totali sono già pronti.
+5. Formato valori: ${fmtM(1234567)} → usa sempre fmtM-style (es. €1,23M, €863k). Nomi agenti: solo cognome.
+
+─── RIEPILOGO PER PERIODO ───
 ${psum}
 
-DEAL IN SALITA (${S.tracked.filter(d=>d.status==='up').length}):
+─── PIPELINE PER SOGLIA PROBABILITÀ (${lastLabel}) ───
+${tierRows}
+
+─── PIPELINE PER AGENTE (${lastLabel}) ───
+${agentRows||'nessun dato'}
+
+─── PIPELINE PER FAMIGLIA PRODOTTO (${lastLabel}) ───
+${famRows||'nessun dato'}
+
+─── DEAL IN SALITA (${S.tracked.filter(d=>d.status==='up').length} totali, top 8) ───
 ${upDeals||'nessuno'}
 
-DEAL IN DISCESA (${S.tracked.filter(d=>d.status==='down').length}):
+─── DEAL IN DISCESA (${S.tracked.filter(d=>d.status==='down').length} totali, top 8) ───
 ${downDeals||'nessuno'}
 
-NUOVI DEAL (${S.tracked.filter(d=>d.status==='new').length}):
+─── NUOVI DEAL (${S.tracked.filter(d=>d.status==='new').length} totali, top 10) ───
 ${newDeals||'nessuno'}
 
-DEAL USCITI (${S.tracked.filter(d=>d.status==='lost').length}):
-${lostDeals||'nessuno'}
+─── DEAL USCITI (${S.tracked.filter(d=>d.status==='lost').length} totali, top 8) ───
+${lostDeals||'nessuno'}`;
 
-DATI COMPLETI (deal × periodo):
-\`\`\`csv
-${csv}
-\`\`\`
-
-ISTRUZIONI: Italiano, professionale, sintetico. Tabelle markdown per confronti. **Grassetto** per insight chiave. Valori in €X.XXX. Cita nomi aziende e agenti specifici.`;
-
-  const msgs=[{role:'system',content:system},...S.messages.slice(-8)];
+  const msgs=[{role:'system',content:system},...S.messages.slice(-6)];
   const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
     method:'POST',
     headers:{'Authorization':`Bearer ${S.apiKey}`,'Content-Type':'application/json','HTTP-Referer':'https://ellysse.it','X-Title':'Ellysse Evolution'},
-    body:JSON.stringify({model:'google/gemini-2.5-flash-lite',messages:msgs,temperature:0.2,max_tokens:2500})
+    body:JSON.stringify({model:'google/gemini-2.5-flash-lite',messages:msgs,temperature:0.1,max_tokens:700})
   });
-  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e?.error?.message||`HTTP ${r.status}`);}
+  if(!r.ok){
+    const e=await r.json().catch(()=>({}));
+    const msg=e?.error?.message||`HTTP ${r.status}`;
+    if(r.status===401||msg.toLowerCase().includes('auth')||msg.toLowerCase().includes('missing'))
+      throw new Error(`Chiave API non valida o mancante. Vai su Config. API nel pannello laterale e incolla la tua chiave OpenRouter (sk-or-v1-...).\n\nDettaglio tecnico: ${msg}`);
+    throw new Error(msg);
+  }
   const dj=await r.json();return dj.choices?.[0]?.message?.content||'_(vuoto)_';
 }
 

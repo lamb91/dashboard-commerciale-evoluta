@@ -427,7 +427,7 @@ function loadTab(id) {
     if (dot) dot.className = 'tab-status loaded';
     // Inject API key into newly loaded tool
     if (ST.apiKey && TOOLS[id].needsKey) {
-      setTimeout(() => injectKey(id, ST.apiKey), 150);
+      setTimeout(() => injectKey(id, ST.apiKey), 600);
     }
   }, { once: true });
 
