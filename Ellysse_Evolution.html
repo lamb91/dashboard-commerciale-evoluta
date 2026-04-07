@@ -680,11 +680,12 @@ header::after{
 }
 .ins-pill{
   font-family:'Montserrat',sans-serif !important;
-  font-size:11px !important;font-weight:700 !important;
+  font-size:13px !important;font-weight:700 !important;
   letter-spacing:.01em !important;
-  border-radius:5px !important;
-  padding:5px 13px !important;
+  border-radius:6px !important;
+  padding:7px 16px !important;
   border:1px solid !important;
+  white-space:nowrap !important;
 }
 
 /* ── PIPELINE INTENSITY MATRIX (hero) ───────────────────────────────────── */
@@ -1502,9 +1503,10 @@ function buildInsightBanner(){
     <div class="ib-head">
       <span class="ib-title">Pipeline ${rangeLabel}</span>
       <div class="ib-delta">
+        <span style="font-size:9px;color:#6a90b0;font-family:'IBM Plex Mono',monospace;margin-right:2px;">Δ valore pipeline</span>
         <span class="ib-delta-val" style="color:${isPos?posC:negC};">${isPos?'+':''}${fmtM(deltaVal)}</span>
         ${pctChange?`<span class="ib-delta-pct" style="color:${isPos?posC:negC};background:${isPos?'rgba(5,150,105,.08)':'rgba(220,53,85,.08)'};">${isPos?'+':''}${pctChange}%</span>`:''}
-        <span style="font-size:9px;color:#6a90b0;font-family:'IBM Plex Mono',monospace;">vs periodo precedente</span>
+        <span style="font-size:9px;color:#6a90b0;font-family:'IBM Plex Mono',monospace;">(${S.periodi[prevIdx].label} → ${S.periodi[lastIdx].label})</span>
       </div>
     </div>
     <div class="ib-stats">
@@ -1531,8 +1533,8 @@ function buildInsightBanner(){
     </div>
     <div class="ib-movers">
       <span class="ib-mover-label">Top variazioni:</span>
-      ${topUp.map(d=>`<span class="ins-pill" style="color:${posC};border-color:rgba(5,150,105,.25);background:rgba(5,150,105,.06);">↑ ${(d.companyName||d.displayName).slice(0,28)} +${Math.round(d.deltaProb*100)}pp</span>`).join('')}
-      ${topDown.map(d=>`<span class="ins-pill" style="color:${negC};border-color:rgba(220,53,85,.25);background:rgba(220,53,85,.05);">↓ ${(d.companyName||d.displayName).slice(0,28)} ${Math.round(d.deltaProb*100)}pp</span>`).join('')}
+      ${topUp.map(d=>`<span class="ins-pill" style="color:${posC};border-color:rgba(5,150,105,.25);background:rgba(5,150,105,.06);">↑ ${(d.companyName||d.displayName).slice(0,45)} +${Math.round(d.deltaProb*100)}pp</span>`).join('')}
+      ${topDown.map(d=>`<span class="ins-pill" style="color:${negC};border-color:rgba(220,53,85,.25);background:rgba(220,53,85,.05);">↓ ${(d.companyName||d.displayName).slice(0,45)} ${Math.round(d.deltaProb*100)}pp</span>`).join('')}
     </div>
   `;
 }
