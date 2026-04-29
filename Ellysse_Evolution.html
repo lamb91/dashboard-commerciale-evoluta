@@ -982,6 +982,19 @@ header::after{
     <!-- Dashboard -->
     <div class="dash-scroll" id="dashArea" style="display:none;">
 
+      <!-- GLOBAL FILTERS -->
+      <div class="filter-row" id="globalFilters" style="margin-bottom:11px;padding:8px 11px;border:1px solid var(--border);border-radius:8px;background:var(--glass);">
+        <span style="font-size:9px;font-family:var(--mono);font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;">Filtri globali</span>
+        <select class="f-sel" id="gFilterFam" onchange="setGlobalFilter('fam',this.value)">
+          <option value="">Tutte le famiglie</option>
+        </select>
+        <select class="f-sel" id="gFilterAgent" onchange="setGlobalFilter('agent',this.value)">
+          <option value="">Tutti i commerciali</option>
+        </select>
+        <button class="hbtn" id="gFilterReset" onclick="resetGlobalFilters()" style="font-size:9px;padding:3px 9px;">Reset</button>
+        <span id="gFilterCount" style="margin-left:auto;font-size:9px;font-family:var(--mono);color:var(--text3);"></span>
+      </div>
+
       <!-- Insight banner -->
       <div class="insight-banner" id="insightBanner" style="display:none;"></div>
 
@@ -1157,9 +1170,68 @@ const FAM_COLORS = {
 // ─── STATE ────────────────────────────────────────────────────────────────────
 const S = {
   apiKey:'', periodi:[], mapping:{id:null,deal:null,company:null,prob:null,value:null,arr:null,agent:null,famiglia:null},
-  tracked:[], messages:[], isLoading:false, chatOpen:false,
+  tracked:[], allTracked:[], gFilter:{fam:'',agent:''},
+  messages:[], isLoading:false, chatOpen:false,
   allDelta:[], charts:{slope:null,pipeline:null,bucket:null,fam:null,top:null,status:null,arr:null,probLine:null,trend:null}
 };
+
+// ─── GLOBAL FILTERS ───────────────────────────────────────────────────────────
+function applyGlobalFilters(){
+  const {fam, agent} = S.gFilter;
+  S.tracked = S.allTracked.filter(d=>{
+    if(fam   && (d.famiglia||'')!==fam)   return false;
+    if(agent && (d.agent||'')   !==agent) return false;
+    return true;
+  });
+}
+function setGlobalFilter(k, v){
+  S.gFilter[k] = v;
+  applyGlobalFilters();
+  refreshDashboard();
+}
+function resetGlobalFilters(){
+  S.gFilter = {fam:'', agent:''};
+  const f=document.getElementById('gFilterFam');   if(f) f.value='';
+  const a=document.getElementById('gFilterAgent'); if(a) a.value='';
+  applyGlobalFilters();
+  refreshDashboard();
+}
+function refreshDashboard(){
+  buildInsightBanner();
+  buildKPIs();
+  buildDeltaTable();
+  buildProbLineChart();
+  buildTrendChart();
+  buildQuickChipsAI();
+  populateGlobalFilterCount();
+}
+function populateGlobalFilters(){
+  const fams  =[...new Set(S.allTracked.map(d=>d.famiglia).filter(Boolean))].sort();
+  const agents=[...new Set(S.allTracked.map(d=>d.agent).filter(Boolean))].sort();
+  const fSel=document.getElementById('gFilterFam');
+  const aSel=document.getElementById('gFilterAgent');
+  if(fSel){
+    const cur=S.gFilter.fam;
+    while(fSel.options.length>1) fSel.remove(1);
+    fams.forEach(f=>fSel.add(new Option(f,f)));
+    fSel.value = fams.includes(cur) ? cur : '';
+    S.gFilter.fam = fSel.value;
+  }
+  if(aSel){
+    const cur=S.gFilter.agent;
+    while(aSel.options.length>1) aSel.remove(1);
+    agents.forEach(a=>aSel.add(new Option(a,a)));
+    aSel.value = agents.includes(cur) ? cur : '';
+    S.gFilter.agent = aSel.value;
+  }
+  populateGlobalFilterCount();
+}
+function populateGlobalFilterCount(){
+  const c=document.getElementById('gFilterCount');
+  if(!c) return;
+  const tot=S.allTracked.length, vis=S.tracked.length;
+  c.textContent = (tot===vis) ? `${tot} deal` : `${vis} / ${tot} deal`;
+}
 
 // ─── ELLYSSE AUTO-DETECT ──────────────────────────────────────────────────────
 function detectElysseMapping(headers) {
@@ -1327,7 +1399,8 @@ function renderSidebar() {
   `).join('');
 
   // Agent filter in table
-  const agents=[...new Set(S.tracked.map(d=>d.agent).filter(Boolean))].sort();
+  const agentSrc = S.allTracked.length ? S.allTracked : S.tracked;
+  const agents=[...new Set(agentSrc.map(d=>d.agent).filter(Boolean))].sort();
   ['filterAgent','deltaAgent'].forEach(id=>{
     const el=document.getElementById(id);
     if(!el) return;
@@ -1426,7 +1499,7 @@ function matchDeals() {
     });
   });
 
-  S.tracked = Object.entries(dealMap).map(([key,d])=>{
+  S.allTracked = Object.entries(dealMap).map(([key,d])=>{
     const pdata = S.periodi.map((_,i)=>({...d.entries[i]||{prob:null,value:null,arr:null,agent:null,famiglia:null}}));
     const present = pdata.filter(x=>x.prob!==null);
     if(!present.length) return null;
@@ -1447,11 +1520,13 @@ function matchDeals() {
             agent:latestAgent,value:latestVal,arr:latestArr,famiglia:latestFam,
             pdata, status, deltaProb:delta, present:present.length};
   }).filter(Boolean);
+  applyGlobalFilters();
+  populateGlobalFilters();
 
   // Update chip
   document.getElementById('dealsChip').style.display='';
-  const tracking=S.tracked.filter(d=>d.present>=2).length;
-  document.getElementById('dealsChipTxt').textContent=`${S.tracked.length} deal · ${tracking} tracciati`;
+  const tracking=S.allTracked.filter(d=>d.present>=2).length;
+  document.getElementById('dealsChipTxt').textContent=`${S.allTracked.length} deal · ${tracking} tracciati`;
   renderSidebar();
 }
 
