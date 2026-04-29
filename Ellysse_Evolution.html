@@ -1276,10 +1276,20 @@ function loadOneFile(file) {
       if(!data.length){toast('File vuoto','w');return;}
       const headers = Object.keys(data[0]);
       const label = guessLabel(file.name);
+      const fileDate = extractFileDate(file.name);
       const color = PERIOD_COLORS[S.periodi.length % PERIOD_COLORS.length];
       const pid = 'p'+Date.now()+Math.random().toString(36).slice(2,5);
-      S.periodi.push({id:pid, file:file.name, label, data, headers, color, rows:data.length});
-      S.periodi.sort((a,b)=>labelToDate(a.label)-labelToDate(b.label));
+      S.periodi.push({id:pid, file:file.name, label, fileDate, data, headers, color, rows:data.length});
+      S.periodi.sort((a,b)=>{
+        // Ordine: prima per data nel nome file (granularità giorno), fallback su label.
+        const da = a.fileDate ?? labelToDate(a.label);
+        const db = b.fileDate ?? labelToDate(b.label);
+        if(da !== db) return da - db;
+        // Tie-breaker stabile: nome file alfabetico
+        return a.file.localeCompare(b.file);
+      });
+      // Se due periodi hanno lo stesso label, disambigua aggiungendo il giorno
+      disambiguateLabels();
       // Auto-detect mapping from first period
       if(S.periodi.length===1) {
         const detected = detectElysseMapping(headers);
@@ -1299,6 +1309,43 @@ function loadOneFile(file) {
   };
   if(ext==='csv') reader.readAsText(file);
   else reader.readAsArrayBuffer(file);
+}
+
+function extractFileDate(filename){
+  // Pattern YYYY-MM-DD nel nome file (es. ellysse-...-2026-04-23.xls)
+  const m = filename.match(/(\d{4})[_\-\.](\d{2})[_\-\.](\d{2})/);
+  if(m){
+    const y=+m[1], mo=+m[2], d=+m[3];
+    if(mo>=1&&mo<=12&&d>=1&&d<=31){
+      const dt=new Date(Date.UTC(y,mo-1,d));
+      if(!isNaN(dt)) return dt.getTime();
+    }
+  }
+  // Pattern YYYY-MM (solo mese, giorno=1)
+  const m2 = filename.match(/(\d{4})[_\-\.](\d{2})(?![\d])/);
+  if(m2){
+    const y=+m2[1], mo=+m2[2];
+    if(mo>=1&&mo<=12){
+      return Date.UTC(y,mo-1,1);
+    }
+  }
+  return null;
+}
+
+function disambiguateLabels(){
+  // Se ≥2 periodi condividono lo stesso label, aggiungi il giorno (DD) per distinguerli
+  const counts={};
+  S.periodi.forEach(p=>{counts[p.label]=(counts[p.label]||0)+1;});
+  S.periodi.forEach(p=>{
+    if(counts[p.label]>1 && p.fileDate){
+      const d=new Date(p.fileDate);
+      const dd=String(d.getUTCDate()).padStart(2,'0');
+      // Aggiunge il giorno solo se non già presente
+      if(!/\b\d{1,2}\b/.test(p.label.replace(/\d{4}/,''))){
+        p.label=`${p.label.split(' ')[0]} ${dd} ${p.label.split(' ').slice(1).join(' ')}`.trim();
+      }
+    }
+  });
 }
 
 function labelToDate(label){
@@ -1344,12 +1391,19 @@ function renderSidebar() {
     const zone = document.createElement('div');
     zone.className = 'period-zone' + (isLast ? ' active' : '');
     const fname = p.file.length > 22 ? p.file.slice(0,22)+'…' : p.file;
+    const warns = [];
+    if(p.arrColMissing) warns.push('ARR');
+    if(p.famColMissing) warns.push('Famiglia');
+    const warnHtml = warns.length
+      ? `<div style="margin-top:4px;font-size:8px;font-family:var(--mono);color:var(--yellow);" title="Colonne assenti nel file: forward-fill da periodo precedente">⚠ ${warns.join(' · ')} ereditat${warns.length>1?'e':'a'}</div>`
+      : '';
     zone.innerHTML = `
       <div class="period-zone-header">
         <span class="period-badge${isLast?' active':''}">${label}</span>
         <span class="period-zone-name">${p.label}</span>
       </div>
       <div class="period-zone-file">File: ${fname}</div>
+      ${warnHtml}
       <button class="period-zone-del" onclick="removePeriod('${p.id}')">✕</button>
     `;
     fl.appendChild(zone);
@@ -1443,6 +1497,8 @@ function matchDeals() {
     const arrCol     = resolveCol(S.mapping.arr,      ['ricavo anno corrente','importo ricavo']);
     const agentCol   = resolveCol(S.mapping.agent,    ['proprietario']);
     const famCol     = resolveCol(S.mapping.famiglia, ['famiglia di offerta','famiglia']);
+    p.arrColMissing  = !arrCol;
+    p.famColMissing  = !famCol;
 
     p.data.forEach(row => {
       // Primary key: Trattativa ID (exact)
@@ -1501,6 +1557,24 @@ function matchDeals() {
 
   S.allTracked = Object.entries(dealMap).map(([key,d])=>{
     const pdata = S.periodi.map((_,i)=>({...d.entries[i]||{prob:null,value:null,arr:null,agent:null,famiglia:null}}));
+    // Forward-fill: se un periodo NON ha la colonna ARR nel file sorgente, eredita
+    // l'ultimo valore noto per quel deal (no invenzione di dati: solo se il dato
+    // manca per assenza di colonna, non per cella vuota).
+    for(let i=1;i<S.periodi.length;i++){
+      if(S.periodi[i].arrColMissing && pdata[i].prob!=null && pdata[i].arr==null && pdata[i-1].arr!=null){
+        pdata[i].arr=pdata[i-1].arr; pdata[i].arrInherited=true;
+      }
+      if(S.periodi[i].famColMissing && pdata[i].prob!=null && !pdata[i].famiglia && pdata[i-1].famiglia){
+        pdata[i].famiglia=pdata[i-1].famiglia; pdata[i].famInherited=true;
+      }
+    }
+    // Backward-fill SOLO famiglia (attributo statico del deal): se un periodo
+    // non ha la colonna Famiglia, prendi il primo valore noto nei periodi successivi.
+    for(let i=S.periodi.length-2;i>=0;i--){
+      if(S.periodi[i].famColMissing && pdata[i].prob!=null && !pdata[i].famiglia && pdata[i+1].famiglia){
+        pdata[i].famiglia=pdata[i+1].famiglia; pdata[i].famInherited=true;
+      }
+    }
     const present = pdata.filter(x=>x.prob!==null);
     if(!present.length) return null;
     const first=present[0]; const last=present[present.length-1];
