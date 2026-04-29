@@ -33,6 +33,40 @@ header, .sidebar, .chat-bar, .chat-input-row, .qchips,
 }
 
 *{margin:0;padding:0;box-sizing:border-box;}
+
+/* ── Heading reset: ereditano stile dal contenitore (semantica senza override visivo) ── */
+h1,h2,h3,h4,h5,h6,p{font-size:inherit;font-weight:inherit;line-height:inherit;color:inherit;}
+
+/* ── A11Y: keyboard focus ring globale (P1 CRITICAL) ── */
+:focus{outline:none;}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,
+[role="button"]:focus-visible,[tabindex]:focus-visible,.dz:focus-visible{
+  outline:2px solid var(--orange);
+  outline-offset:2px;
+  box-shadow:0 0 0 4px rgba(247,148,30,.22);
+  border-radius:6px;
+}
+
+/* ── A11Y: respect motion preferences (P1 CRITICAL) ── */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+    scroll-behavior:auto!important;
+  }
+  .cdot.pulse{animation:none!important;}
+}
+
+/* ── Tabular numerals: stabilità numeri in count-up + heatmap ── */
+.h-kpi-val,.ib-delta-val,.ib-stat-num,.ib-stat-euro,
+.dt td,.dt th,#probHeatmap,.fmt,.cm-row,
+.file-rows,.brand-sub,.chip,.model-pill,
+[class*="mono"],[style*="IBM Plex Mono"]{
+  font-variant-numeric:tabular-nums;
+  font-feature-settings:"tnum" 1;
+}
+
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Montserrat',system-ui,sans-serif;overflow:hidden;}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:radial-gradient(ellipse 70% 50% at 0% 0%,rgba(247,148,30,.06),transparent 55%),
@@ -867,7 +901,7 @@ header::after{
 <!-- HEADER -->
 <header>
   <div class="logo">E</div>
-  <div><div class="brand">Pipeline Evolution</div><div class="brand-sub">ELLYSSE · INTELLIGENCE MULTI-PERIODO</div></div>
+  <div><h1 class="brand">Pipeline Evolution</h1><p class="brand-sub">ELLYSSE · INTELLIGENCE MULTI-PERIODO</p></div>
   <div class="hsep"></div>
   <!-- KPI inline -->
   <div class="h-kpis" id="hKpis"></div>
@@ -965,8 +999,10 @@ header::after{
 
     <!-- Empty state -->
     <div class="empty-state" id="emptyState">
-      <div class="e-icon">📈</div>
-      <div class="e-title">Pipeline Evolution</div>
+      <div class="e-icon" aria-hidden="true">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+      </div>
+      <h1 class="e-title">Pipeline Evolution</h1>
       <div class="e-sub">Carica gli Excel delle mensilità precedenti. La dashboard rileva automaticamente le colonne <strong>Ellysse</strong> e traccia ogni trattativa nel tempo tramite <strong>Trattativa ID</strong> — nessuna configurazione necessaria.</div>
       <div class="e-steps">
         <div class="e-step"><div class="e-n">1</div>Carica 2+ file Excel (uno per mese)</div>
@@ -974,7 +1010,7 @@ header::after{
         <div class="e-step"><div class="e-n">3</div>Analisi immediata</div>
       </div>
       <div style="margin-top:10px;padding:10px 16px;background:rgba(0,230,118,.05);border:1px solid rgba(0,230,118,.15);border-radius:9px;font-size:11px;color:var(--text2);max-width:420px;line-height:1.7;">
-        💡 <strong style="color:var(--green);">Formato Ellysse rilevato automaticamente:</strong><br>
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;color:var(--green);"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.8.8 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg> <strong style="color:var(--green);">Formato Ellysse rilevato automaticamente:</strong><br>
         Colonne: <code style="font-size:9px;background:rgba(0,0,0,.3);padding:1px 4px;border-radius:3px;">Trattativa ID · Probabilità previsione · Importo · Company Name · Proprietario · Famiglia</code>
       </div>
     </div>
@@ -985,13 +1021,13 @@ header::after{
       <!-- GLOBAL FILTERS -->
       <div class="filter-row" id="globalFilters" style="margin-bottom:11px;padding:8px 11px;border:1px solid var(--border);border-radius:8px;background:var(--glass);">
         <span style="font-size:9px;font-family:var(--mono);font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;">Filtri globali</span>
-        <select class="f-sel" id="gFilterFam" onchange="setGlobalFilter('fam',this.value)">
+        <select class="f-sel" id="gFilterFam" aria-label="Filtra per famiglia di offerta" onchange="setGlobalFilter('fam',this.value)">
           <option value="">Tutte le famiglie</option>
         </select>
-        <select class="f-sel" id="gFilterAgent" onchange="setGlobalFilter('agent',this.value)">
+        <select class="f-sel" id="gFilterAgent" aria-label="Filtra per commerciale" onchange="setGlobalFilter('agent',this.value)">
           <option value="">Tutti i commerciali</option>
         </select>
-        <button class="hbtn" id="gFilterReset" onclick="resetGlobalFilters()" style="font-size:9px;padding:3px 9px;">Reset</button>
+        <button class="hbtn" id="gFilterReset" aria-label="Azzera filtri globali" onclick="resetGlobalFilters()" style="font-size:9px;padding:3px 9px;">Reset</button>
         <span id="gFilterCount" style="margin-left:auto;font-size:9px;font-family:var(--mono);color:var(--text3);"></span>
       </div>
 
@@ -1005,8 +1041,8 @@ header::after{
       <!-- Matrice Intensità Pipeline -->
       <div style="margin-bottom:13px;">
         <div class="him-header">
-          <div class="him-title">Matrice Intensità Pipeline</div>
-          <div class="him-subtitle">Valori in € (Milioni)</div>
+          <h2 class="him-title">Matrice Intensità Pipeline</h2>
+          <p class="him-subtitle">Valori in € (Milioni)</p>
         </div>
         <div class="him-wrap">
           <div id="probHeatmap"></div>
@@ -1015,9 +1051,10 @@ header::after{
 
       <!-- TREND LINEARE PER FASCIA DI PROBABILITÀ -->
       <div class="cc" style="margin-bottom:13px;" id="trendSection">
-        <div class="cc-title" style="font-size:10px;">
-          📈 Evoluzione Pipeline per Fascia di Probabilità
-        </div>
+        <h2 class="cc-title" style="font-size:10px;">
+          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          Evoluzione Pipeline per Fascia di Probabilità
+        </h2>
         <div style="padding:4px 0 0;">
           <canvas id="trendChart" height="90"></canvas>
         </div>
@@ -1025,19 +1062,20 @@ header::after{
 
       <!-- HERO: Tracciamento deal periodo per periodo -->
       <div class="cc" style="margin-bottom:11px;">
-        <div class="cc-title" style="font-size:10px;">
-          🔄 Tracciamento trattative periodo per periodo
+        <h2 class="cc-title" style="font-size:10px;">
+          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+          Tracciamento trattative periodo per periodo
           <div class="filter-row" style="margin:0;margin-left:8px;">
-            <select class="f-sel" id="deltaFilter" onchange="filterDelta()">
-              <option value="">Tutti</option>
-              <option value="new">🔵 Nuovi</option>
-              <option value="up">🟢 In salita</option>
-              <option value="down">🔴 In discesa</option>
-              <option value="stable">⬜ Stabili</option>
-              <option value="lost">✗ Usciti</option>
+            <select class="f-sel" id="deltaFilter" aria-label="Filtra per stato trattativa" onchange="filterDelta()">
+              <option value="">Tutti gli stati</option>
+              <option value="new">Nuovi</option>
+              <option value="up">In salita</option>
+              <option value="down">In discesa</option>
+              <option value="stable">Stabili</option>
+              <option value="lost">Usciti</option>
             </select>
-            <select class="f-sel" id="deltaAgent" onchange="filterDelta()"><option value="">Tutti agenti</option></select>
-            <input class="f-inp" id="deltaSearch" placeholder="Cerca..." oninput="filterDelta()"/>
+            <select class="f-sel" id="deltaAgent" aria-label="Filtra tabella per commerciale" onchange="filterDelta()"><option value="">Tutti agenti</option></select>
+            <input class="f-inp" id="deltaSearch" aria-label="Cerca trattativa per nome o azienda" placeholder="Cerca..." oninput="filterDelta()"/>
           </div>
         </div>
         <div class="dt-wrap" style="max-height:calc(100vh - 380px);min-height:220px;">
@@ -1058,8 +1096,8 @@ header::after{
 <!-- INTELLIGENCE AGENT FLOATING PANEL -->
 <div class="ia-panel hidden" id="iaPanel">
   <div class="ia-header">
-    <div class="ia-title">Agente Intelligenza</div>
-    <button class="ia-close" onclick="toggleIA()">×</button>
+    <h2 class="ia-title">Agente Intelligenza</h2>
+    <button class="ia-close" aria-label="Chiudi pannello Agente Intelligenza" title="Chiudi" onclick="toggleIA()">×</button>
   </div>
   <div class="ia-chips" id="quickChips" style="display:none;"></div>
   <div class="ia-hist" id="chatHist" style="display:none;"></div>
@@ -1068,12 +1106,14 @@ header::after{
     <input class="ia-inp" id="cInp"
       placeholder="Fai una domanda sulla pipeline..."
       disabled onkeydown="if(event.key==='Enter'){event.preventDefault();sendChat();}"/>
-    <button class="ia-send" id="sBtn" onclick="sendChat()" disabled>→</button>
+    <button class="ia-send" id="sBtn" aria-label="Invia messaggio" title="Invia" onclick="sendChat()" disabled>→</button>
   </div>
 </div>
 
 <!-- FAB -->
-<button class="ia-fab" id="iaFab" onclick="toggleIA()">🤖</button>
+<button class="ia-fab" id="iaFab" aria-label="Apri Agente Intelligenza" title="Agente Intelligenza" onclick="toggleIA()">
+  <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
+</button>
 
 </div><!-- /.app -->
 
@@ -1404,7 +1444,7 @@ function renderSidebar() {
       </div>
       <div class="period-zone-file">File: ${fname}</div>
       ${warnHtml}
-      <button class="period-zone-del" onclick="removePeriod('${p.id}')">✕</button>
+      <button class="period-zone-del" aria-label="Rimuovi periodo ${p.label}" title="Rimuovi periodo" onclick="if(confirm('Rimuovere il periodo ${p.label}?'))removePeriod('${p.id}')">✕</button>
     `;
     fl.appendChild(zone);
   });
@@ -1672,7 +1712,7 @@ function buildInsightBanner(){
       <div class="ib-stat">
         <span class="ib-stat-num" style="color:#0ea5e9;">${newDeals.length}</span>
         <span class="ib-stat-euro" style="color:#0ea5e9;">${fmtM(sumVal(newDeals))}</span>
-        <span class="ib-stat-lbl">✦ Nuovi</span>
+        <span class="ib-stat-lbl"><svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:-1px;margin-right:2px;"><path d="M12 2 14.39 8.85 21.5 11l-7.11 2.15L12 20l-2.39-6.85L2.5 11l7.11-2.15Z"/></svg>Nuovi</span>
       </div>
       <div class="ib-stat">
         <span class="ib-stat-num" style="color:#6a90b0;">${lostDeals.length}</span>
